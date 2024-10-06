@@ -1,0 +1,69 @@
+Need these library to build python
+
+sudo apt update
+
+sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python3-openssl git
+
+
+Install python manager: curl https://pyenv.run | bash
+
+Add to .zshrc
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+
+Reload .zshrc
+
+source ~/.zshrc
+
+Install python 3.10
+
+pyenv install 3.10
+
+Set it global
+
+pyenv global 3.10
+
+
+Setup env in folder u want to use
+
+python -m venv realesrgan-env
+
+source realesrgan-env/bin/activate
+
+Clone the Real-ESRGAN Repository
+
+git clone https://github.com/xinntao/Real-ESRGAN.git
+cd Real-ESRGAN
+
+Install the required packages
+pip install -r requirements.txt (if it have requirement)
+
+# Install basicsr - https://github.com/xinntao/BasicSR
+# We use BasicSR for both training and inference
+pip install basicsr
+# facexlib and gfpgan are for face enhancement
+pip install facexlib
+pip install gfpgan
+python setup.py develop
+
+Download the Pre-trained Model
+
+wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.2.4/RealESRGAN_x4plus_anime_6B.pth -P weights
+
+
+Prepare Input Images
+
+Place your input images in a directory named inputs
+
+Run the Inference Script
+
+python inference_realesrgan.py -n RealESRGAN_x4plus_anime_6B -i inputs
+
+
+Decrypt RPG Maker Game by python
+
+python mv_decoder.py "http://mnt/d/RPG%20Game/test" output
+

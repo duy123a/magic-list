@@ -1,0 +1,66 @@
+Example for doing tasks, có task id là 123
+
+1. Chuyển sang nhánh dev (hoặc nhánh mà bạn cần pull)
+git checkout developer  # switch sang nhánh develop
+
+2. Pull về
+git pull  # lấy code mới nhất về
+
+Coding...review code...etc
+
+3. Chuẩn bị tạo Pull Request (PR)
+Nhưng có thể trong lúc mình làm, ai đó đã update thêm lên nhánh develop rồi.
+Nên mình phải lấy code mới nhất trên nhánh develop rồi mới apply cái changes của mình
+
+git add .  # chấp nhận tất cả changes
+git stash  # save tất cả code changes vào stash (kiểu nơi giữ code tạm) (git stash push) (phải git add vào stage mới lưu vào stash được)
+git pull  # lấy code mới nhất về
+
+4. Tạo nhánh cho code changes của mình
+git checkout -b feature/123-add-address-ui
+
+5. Lấy code từ trong stash ra (hồi nãy lưu bằng git stash)
+git stash pop  # lấy stash gần nhất và xóa nó ra
+OPTIONAL: resolve conflicts
+
+Nếu có nhiều stack
+git stash list (-p: nếu muốn xem nội dung)
+git stash apply "stash@{n}"
+git stash drop "stash@{n}"
+
+6. Tạo commit, viết commit message
+git status # xem các files thay đổi
+git add . # chấp nhận tất cả thay đổi
+
+git commit -m "[123] Add address ui
+
+- More details about your PR
+- Keep it short and descriptive"
+
+7. Push code lên remote repository
+git push -u origin feature/123-address-ui (-u: add upstream (tracking) reference)
+
+8. Cuối cùng, lên remote repo tạo PR/MR vào nhánh develop. Xong nhờ lead review thôi
+
+9. Xóa branch thừa sau khi PR/MR
+git branch -d feature/123-add-address-ui (chỉ có thể xóa khi đã merge)
+git branch -D feature/123-add-address-ui (chưa merge cũng xóa được)
+
+
+10. Xem commit log
+git log --all --decorate --oneline --graph
+
+Di chuyển head đến commit nào đấy
+git checkout (the number of the commit)
+
+Di chuyển head về lại mới nhất
+git checkout main
+
+Bạn có thể tạo alias cho nó bằng
+git config --global alias.adog "log --all --decorate --oneline --graph"
+Sau đó gõ
+git adog
+là được
+
+Chuyển branch master thành main
+git branch -m master main

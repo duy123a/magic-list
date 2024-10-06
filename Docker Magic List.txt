@@ -1,0 +1,65 @@
+(sudo)
+docker run "image name" : run image (and download/install if it doesn't has)
+docker start 'container id/ container name': start containter again
+docker ps: show list of running container
+docker ps -a: show list of container whenever running or stopped
+docker stop "container id/ container name": stop a container running
+docker rm "container id/ container name": remove a container
+docker images: show image list
+docker rmi "image name" : remove image
+docker pull "image name" : download and install image
+docker exec "container id/ container name" "command" : execute a command in the container
+
+docker run -d "image name" : run in the detach mode (useful if you want to use cmd again)
+docker attach "container id/ container name" : attach container again
+
+docker stop $(docker ps -a -q) : stop all container
+docker rm $(docker ps -a -q) : remove all container
+
+docker run "image name":"tag" : run image with tag version, for example run redis:4.0
+docker run - i "image name": run at interactive mode (you can input in the cmd)
+docker run - it "image name": same above but with pseudo terminal so you can red the prompt
+docker run --name "name of container" "image name" : run image with custom container name
+
+docker rmi -f $(docker images -aq) : delete all images
+
+The internal IP of docker is 172.17.0.2
+The public IP of docker is 192.168.1.5 (need port mapping)
+
+docker run -p "public port":"internal port" "image name" : run image with port mapping
+docker run -v "map path":"original path" "image name" : run image with volume mapping, if you don't map when you remove the container all data will be rip as well
+Example: docker run -v /opt/datadir:/var/lib/mysql mysql : run mysql with volume mapping
+
+docker inspect "container id/ container name" : inspect container
+docker logs "container id/ container name" : show log of detach container
+
+docker run -e "ENV key"="ENV value" "image name" : run image with env variables
+docker run --entry-point "entry point cmd" "image name" "command" : run image with overwriting entry-point (command will always overwriting)
+
+docker volume ls: check list volume
+docker volume create 'volume name': create volume
+docker volume rm 'volume name': delete volume
+
+Read log from docker container
+docker logs --since=1h 'container_id'
+
+Or export to txt file
+docker logs --since=1h 'container_id' > /path/to/save.txt
+
+docker run --name sqlserver -p 1433:1433 -v mssql:/var/opt/mssql -e SA_PASSWORD=7551656As! -e ACCEPT_EULA=Y -d mcr.microsoft.com/mssql/server:2017-latest
+docker run --name sqlserver -p 1433:1433 -v mssql:/var/opt/mssql -e MSSQL_SA_PASSWORD=7551656As! -e ACCEPT_EULA=Y -d mcr.microsoft.com/mssql/server:2019-latest
+
+hostname -I
+You can connect to SSMS by using Linux Public Id, public port
+Example: 172.24.17.122,1433
+
+docker exec -it sqlserver 'bash'
+cd /opt/mssql-tools/bin/
+./sqlcmd -U SA -P 7551656As!
+
+select name from master.dbo.sysdatabases
+
+See list of volume
+docker volume list
+Remove unused volume
+docker volume rm $(docker volume ls -qf dangling=true)

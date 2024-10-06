@@ -1,0 +1,39 @@
+sudo apt update -y && sudo apt upgrade -y
+sudo apt-get update -y && sudo apt-get upgrade -y
+sudo apt clean && sudo apt-get clean && sudo apt-get autoremove && sudo apt-get autoremove
+
+touch: create file
+cat: read file and show to output
+mkdir: create folder
+ls: show
+ls -a: show + hidden
+cd: cd
+nano: use nano editor
+rm -rf: delete
+sudo su: enter root mode
+pwd: current path
+
+fnm list: show node version list
+fnm install [Node version]: install node version
+fnm uninstall [Node version]: remove node version
+fnm use [Node version]: use node version
+
+Ctrl C: exit node repl/vim
+Ctrl L: clear log
+
+pnyev global 3.1.0: use python version
+
+sudo service --status-all: check all service in linux
+sudo service docker start: start service docker
+
+sudo lsof -i :3000: check which app running at port 3000
+kill -9 <PID>: kill the app
+
+-----------------------------------
+
+Install .NET sdk
+sudo apt-get update && \
+  sudo apt-get install -y aspnetcore-runtime-8.0
+
+Check .NET
+dotnet --info

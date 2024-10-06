@@ -1,0 +1,15 @@
+Should move linux storage to another disk than C
+
+Should install zsh, on-my-zsh and zsh-autosuggestion
+
+Cách cài zsh-autosuggestion
+
+- git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
+Kích hoạt plugin
+
+sudo nano .zshrc
+
+- plugins=(zsh-autosuggestions)
+
+source ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
