@@ -16,6 +16,14 @@ dotnew new gitignore
 
 dotnet new webapi -o src/AuctionService --use-controllers
 
+dotnet new classlib -o src/Common
+
+4.5 Add Common as reference
+
+cd src/AuctionService
+
+dotnet add reference ../../src/Common
+
 5. Add this project to solution (remember still cd at the folder which contains the sln file)
 
 dotnet sln add src/AuctionService
@@ -60,6 +68,10 @@ Then at the solution folder, run the docker compose
 
 docker compose up -d
 
+If you want to stop
+
+docker compose down
+
 11. Add data from migration to database
 
 dotnet ef database update
@@ -92,3 +104,36 @@ dotnet ef database update 0
 Remove last migration
 
 dotnet ef migrations remove
+
+
+
+
+--------------------------------------
+MongoDB
+
+services:
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgrespw
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgressql/data
+  mongodb:
+    image: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=mongopw
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/var/lib/mongodb/data
+volumes:
+  pgdata:
+  mongodata:
+
+
+Connection string to connect:
+Inside WSL: mongodb://root:mongopw@localhost
+Outside WSL: mongodb://root:mongopw@172.24.17.122:27017
