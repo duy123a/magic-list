@@ -46,7 +46,6 @@ git push -u origin feature/123-address-ui (-u: add upstream (tracking) reference
 git branch -d feature/123-add-address-ui (chỉ có thể xóa khi đã merge)
 git branch -D feature/123-add-address-ui (chưa merge cũng xóa được)
 
-
 10. Xem commit log
 git log --all --decorate --oneline --graph
 
@@ -64,3 +63,8 @@ là được
 
 Chuyển branch master thành main
 git branch -m master main
+
+Nếu nhánh đã được đẩy lên remote: Sau khi đổi tên nhánh cục bộ, bạn cần cập nhật nhánh trên remote:
+
+git push origin -u main
+git push origin --delete master
