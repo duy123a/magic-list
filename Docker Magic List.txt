@@ -67,7 +67,7 @@ docker volume rm $(docker volume ls -qf dangling=true)
 Restore database from external disk, need to move its docker location first
 docker exec -i <docker container id> bash -c 'cat > /var/opt/mssql/backup.bak' < '/home/duy123a/DWH_Sanrin_20231218.bak'
 
-Run this query first (to know the name of the data file)
+Run this query first (to know the logical and physical name of the data file)
 RESTORE FILELISTONLY FROM DISK = '/var/opt/mssql/backup.bak';
 
 RESTORE DATABASE DWH_Sanrin
