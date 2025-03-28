@@ -37,3 +37,8 @@ sudo apt-get update && \
 
 Check .NET
 dotnet --info
+
+----------------------------------
+
+Access to Linux from Window File Explorer
+\\wsl$

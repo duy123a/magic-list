@@ -1,0 +1,50 @@
+        public static List<DistinctOfficeGroupModel> GetDistinct(AppDbContext? db = null)
+        {
+            if (db == null)
+            {
+                db = AppDbContext.Instance;
+            }
+
+            // SQL文作成
+            var sql = @"
+                SELECT
+                    DISTINCT OfficeGroupCode, OfficeGroupName
+                FROM
+                    M_OfficeGroup
+            ";
+
+            var connection = db.Database.GetDbConnection();
+
+            if (connection.State == ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+
+            var dataTable = new DataTable();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = sql;
+
+                using (var adapter = DbProviderFactories.GetFactory(connection)?.CreateDataAdapter())
+                {
+                    if (adapter == null)
+                    {
+                        throw new InvalidOperationException("Could not create data adapter.");
+                    }
+
+                    adapter.SelectCommand = command;
+                    adapter.Fill(dataTable);
+                }
+            }
+
+            connection.Close();
+
+            var result = dataTable.AsEnumerable().Select(row => new DistinctOfficeGroupModel
+            {
+                OfficeGroupCode = row["OfficeGroupCode"]?.ToString() ?? string.Empty,
+                OfficeGroupName = row["OfficeGroupName"]?.ToString() ?? string.Empty
+            }).ToList();
+
+            return result;
+        }

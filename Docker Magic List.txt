@@ -48,6 +48,12 @@ docker logs --since=1h 'container_id' > /path/to/save.txt
 
 docker run --name sqlserver -p 1433:1433 -v mssql:/var/opt/mssql -e SA_PASSWORD=7551656As! -e ACCEPT_EULA=Y -d mcr.microsoft.com/mssql/server:2017-latest
 docker run --name sqlserver -p 1433:1433 -v mssql:/var/opt/mssql -e MSSQL_SA_PASSWORD=7551656As! -e ACCEPT_EULA=Y -d mcr.microsoft.com/mssql/server:2019-latest
+docker run --name sqlserver -p 1433:1433 -v mssql:/var/opt/mssql -e MSSQL_SA_PASSWORD=7551656As! -e ACCEPT_EULA=Y -d mcr.microsoft.com/mssql/server:2022-latest
+
+In case you can't run due to permission (likely u don't have permission in mssql inside docker)
+docker volume create mssql  # Ensure the volume exists
+sudo chown -R 10001:0 /var/lib/docker/volumes/mssql/_data  # Give SQL Server user access
+sudo chmod -R 770 /var/lib/docker/volumes/mssql/_data  # Allow read/write access
 
 hostname -I
 You can connect to SSMS by using Linux Public Id, public port
@@ -64,7 +70,7 @@ docker volume list
 Remove unused volume
 docker volume rm $(docker volume ls -qf dangling=true)
 
-Restore database from external disk, need to move its docker location first
+* Restore database from external disk, need to move its docker location first
 docker exec -i <docker container id> bash -c 'cat > /var/opt/mssql/backup.bak' < '/home/duy123a/DWH_Sanrin_20231218.bak'
 
 Run this query first (to know the logical and physical name of the data file)
@@ -79,3 +85,48 @@ WITH
     NOUNLOAD, 
     REPLACE, 
     STATS = 5;
+(In case there is the same logical name in the database before, need to change the logical name)
+ALTER DATABASE DWH_Sanrin MODIFY FILE (NAME = 'DWH', NEWNAME = 'DWH_Sanrin');
+ALTER DATABASE DWH_Sanrin MODIFY FILE (NAME = 'DWH_log', NEWNAME = 'DWH_Sanrin_log');
+
+Delete the backup file if u want
+docker exec -it ec711 rm /var/opt/mssql/backup.bak
+
+
+* Backup database and move it to external disk
+Use magic query first
+DECLARE @RootPath VARCHAR(MAX);
+DECLARE @DatabaseName VARCHAR(MAX);
+DECLARE @BackupPath VARCHAR(MAX);
+DECLARE @Extend VARCHAR(MAX);
+select db_name()
+SELECT	@RootPath = '',
+		@DatabaseName = DB_NAME(),
+		@Extend = 'MUSTBACKUP',
+		@BackupPath = @RootPath
+			+ @DatabaseName
+			+ '_'
+			+ FORMAT(GETDATE(), 'yyyyMMdd_hhmmss')
+			+ IIF(@Extend <> '', '_' + @Extend, '')
+			+ '.bak';
+
+BACKUP DATABASE @DatabaseName TO DISK = @BackupPath;
+GO
+
+It should save inside the container
+
+You can check the contain inside container (sqlserver is the name of the volume i think, or u can use container id)
+docker exec -it sqlserver /bin/bash
+cd /var/opt/mssql
+ls -la
+
+I find it at /var/opt/mssql/data
+
+Exit the container
+exit
+
+Copy the Backup File to Your Home Folder
+docker cp sqlserver:/var/opt/mssql/data/DWH_Sanrin_VS2022_20250220_110347_MUSTBACKUP.bak ~/DWH_Sanrin_VS2022_20250220_110347_MUSTBACKUP.bak
+
+Delete the old one
+docker exec sqlserver rm /var/opt/mssql/data/DWH_Sanrin_VS2022_20250220_110347_MUSTBACKUP.bak

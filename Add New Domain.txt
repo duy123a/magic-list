@@ -1,0 +1,22 @@
+When cloning Github/Gitlab project from other domain, there is a chance we can't clone it due to SSL Cert, we need to manually add it
+
+1. Get the certificate from the GitLab server (it will generate the crt at the location u type this cmd)
+
+echo -n | openssl s_client -showcerts -connect gitlab.dehasoft.vn:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > gitlab.crt
+
+OR
+
+Go to https://gitlab.dehasoft.vn
+
+Click to the lock icon near the address => Choose Certificate => Export => Get the crt file
+
+
+2. Add the certificate to Git’s trusted store:
+
+git config --global http.sslCAInfo "C:/Program Files/Git/mingw64/ssl/certs/gitlab.crt"
+
+3. Should able to clone
+
+You can check again by
+
+git config --global --get http.sslCAInfo

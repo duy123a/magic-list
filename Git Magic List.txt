@@ -68,3 +68,10 @@ Nếu nhánh đã được đẩy lên remote: Sau khi đổi tên nhánh cục 
 
 git push origin -u main
 git push origin --delete master
+
+
+Kéo commit mới nhất từ develop/main sang nhánh mình đang làm (ko show commit mới)
+git rebase myfeature
+
+Show commit mới, cần thực hie65n merge (phù hợp hơn nếu có conflict)
+git merge myfeature 
