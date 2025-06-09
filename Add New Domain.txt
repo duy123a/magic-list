@@ -20,3 +20,7 @@ git config --global http.sslCAInfo "C:/Program Files/Git/mingw64/ssl/certs/gitla
 You can check again by
 
 git config --global --get http.sslCAInfo
+
+Otherwise you can't completely decide to not to using it (quite useful in wsl2)
+
+git config --global http.sslverify "false"

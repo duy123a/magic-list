@@ -69,9 +69,21 @@ Nếu nhánh đã được đẩy lên remote: Sau khi đổi tên nhánh cục 
 git push origin -u main
 git push origin --delete master
 
-
 Kéo commit mới nhất từ develop/main sang nhánh mình đang làm (ko show commit mới)
 git rebase myfeature
 
-Show commit mới, cần thực hie65n merge (phù hợp hơn nếu có conflict)
-git merge myfeature 
+Show commit mới, cần thực hiện merge (phù hợp hơn nếu có conflict)
+git merge myfeature
+
+Git clone (hoặc bất kì thứ gì khác qua https) cần personal access hoặc password
+
+git clone https://duyhd:zTkppjy1S4sbP8G1qLes@gitlab.dehasoft.vn/deha-soft/jmu/bsac01/bsac01.git
+
+Với duyhd là user name hoặc mail?
+zTkppjy1S4sbP8G1qLes là personal access hoặc password
+
+Đổi remote URL từ HTTPS sang SSH (trong truờng hợp lỡ them remote vào bằng https)
+git remote set-url origin git@github.com:duy123a/Restia.git
+
+Tạm thời ko dung sslverify (extremely useful in wsl2,ở window thì có thể set = cert tạo sẵn khi cài git cũng được hoặc mount cái mới)
+git config --global http.sslverify "false" 
