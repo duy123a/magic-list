@@ -12,6 +12,7 @@ nano: use nano editor
 rm -rf: delete
 sudo su: enter root mode
 pwd: current path
+cp: copy file
 
 fnm list: show node version list
 fnm install [Node version]: install node version
@@ -42,3 +43,7 @@ dotnet --info
 
 Access to Linux from Window File Explorer
 \\wsl$
+
+Fix folder rule
+sudo chown -R $USER:$USER /home/duy123a/project/derp-api
+sudo chmod -R u+rw /home/duy123a/project/derp-api

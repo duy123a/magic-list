@@ -1,3 +1,4 @@
+Check dung lượng
 SELECT
   t.NAME AS TableName,
   i.name as indexName,
@@ -28,7 +29,7 @@ ORDER BY
 
 
 
-
+Back up
 DECLARE @RootPath VARCHAR(MAX);
 DECLARE @DatabaseName VARCHAR(MAX);
 DECLARE @BackupPath VARCHAR(MAX);
@@ -46,3 +47,29 @@ SELECT	@RootPath = 'D:\',
 
 BACKUP DATABASE @DatabaseName TO DISK = @BackupPath;
 GO
+
+
+
+
+
+
+Xóa hết table + khóa ngoại
+-- 1. Generate DROP statements for all foreign keys
+DECLARE @sql NVARCHAR(MAX) = N'';
+
+SELECT @sql += '
+ALTER TABLE [' + SCHEMA_NAME(t.schema_id) + '].[' + t.name + '] DROP CONSTRAINT [' + fk.name + '];'
+FROM sys.foreign_keys fk
+JOIN sys.tables t ON fk.parent_object_id = t.object_id;
+
+EXEC sp_executesql @sql;
+
+-- 2. Generate DROP TABLE statements for all user tables
+SET @sql = N'';
+
+SELECT @sql += '
+DROP TABLE [' + SCHEMA_NAME(schema_id) + '].[' + name + '];'
+FROM sys.tables
+WHERE is_ms_shipped = 0;
+
+EXEC sp_executesql @sql;

@@ -78,6 +78,7 @@ git merge myfeature
 Git clone (hoặc bất kì thứ gì khác qua https) cần personal access hoặc password
 
 git clone https://duyhd:zTkppjy1S4sbP8G1qLes@gitlab.dehasoft.vn/deha-soft/jmu/bsac01/bsac01.git
+git clone https://duyhd:DAeoUj-S1oGztNqMnNAH@gitlab.dehasoft.vn/deha-soft/sfs/derppj/derp-api.git
 
 Với duyhd là user name hoặc mail?
 zTkppjy1S4sbP8G1qLes là personal access hoặc password
@@ -86,4 +87,7 @@ zTkppjy1S4sbP8G1qLes là personal access hoặc password
 git remote set-url origin git@github.com:duy123a/Restia.git
 
 Tạm thời ko dung sslverify (extremely useful in wsl2,ở window thì có thể set = cert tạo sẵn khi cài git cũng được hoặc mount cái mới)
-git config --global http.sslverify "false" 
+git config --global http.sslverify "false"
+
+Xóa file khỏi remote nhưng giữ lại local
+git rm --cached <fileName>

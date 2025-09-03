@@ -1,0 +1,8 @@
+Tìm xem process nào dang dung port 5173 (có thể bị docker container nào đấy giành)
+netstat -ano | findstr :5173
+
+Ví dụ kết quả
+TCP    127.0.0.1:5173         0.0.0.0:0              LISTENING       15384
+
+Kill app dung port 5173
+taskkill /PID 15384 /F
