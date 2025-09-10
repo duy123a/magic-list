@@ -112,6 +112,11 @@ dotnet publish -c Release -o ./publish
 cd publish
 dotnet YourApp.dll
 
+14. Hack host to increase/decrease download speed
+
+Fix file host here: C:\Windows\System32\drivers\etc\hosts
+
+199.232.210.172 download.visualstudio.microsoft.com
 
 --------------------------------------
 MongoDB
