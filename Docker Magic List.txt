@@ -92,6 +92,7 @@ ALTER DATABASE DWH_Sanrin MODIFY FILE (NAME = 'DWH_log', NEWNAME = 'DWH_Sanrin_l
 Delete the backup file if u want
 docker exec -it ec711 rm /var/opt/mssql/backup.bak
 
+OR: docker exec -it sqlserver bash (so see inside the image)
 
 * Backup database and move it to external disk
 Use magic query first
