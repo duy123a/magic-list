@@ -37,9 +37,11 @@ pyenv --version
 
 Setup env in folder u want to use
 
-python -m venv realesrgan-env
+python -m venv realesrgan-env (or just python -m venv venv)
 
-source realesrgan-env/bin/activate
+source realesrgan-env/bin/activate (source venv/bin/activate)
+
+Nếu là window: source venv/Scripts/activate
 
 Clone the Real-ESRGAN Repository
 
