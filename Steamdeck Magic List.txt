@@ -1,0 +1,24 @@
+Để remote control/FTP file share
+
+Cài rustdesk (phía PC)
+Cài rustdeck AppImage (phía steamdeck)
+
+chmod +x rustdeck.AppImage
+./rustdeck.AppImage
+
+
+Thêm vào phần launcher nếu có dung winapi (ví dụ như bepinex)
+WINEDLLOVERRIDES="winhttp.dll=n,b" %command%
+
+
+Cài protontricks (từ flatpack), rồi cài flatseal de bơm quyen cho protontrick
+Set alias cho protontricks
+
+echo "alias protontricks='flatpak run com.github.Matoking.protontricks'" >> ~/.bashrc
+
+check library duoc cai trong prefix (vd day la skyrim)
+
+protontricks 489830 winecfg
+
+Tắt force hdr
+DXVK_HDR=0 %command%

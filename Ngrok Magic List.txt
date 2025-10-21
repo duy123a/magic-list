@@ -1,0 +1,22 @@
+Note: Ngrok can't see https port due to self-signed cert
+
+Need to set to 0.0.0.0 so the ngrok in docker can see
+
+DOTNET_URLS=http://0.0.0.0:5019 dotnet Demo01.WebApi.dll
+
+Then type ipconfig to your cmd in window
+
+Get the value like this
+
+Wireless LAN adapter Wi-Fi:
+
+IPv4 Address : 192.168.1.55
+
+Then type
+
+docker run --rm -it -p 4040:4040 -e NGROK_AUTHTOKEN=34N6YjkVap4sGxpsuID34en5dYq_Q8BGMsF6eXkADHoEUiSg ngrok/ngrok http 192.168.1.55:5019
+
+If using ngrok window
+
+set NGROK_AUTHTOKEN=34N6YjkVap4sGxpsuID34en5dYq_Q8BGMsF6eXkADHoEUiSg
+ngrok http 5019 
