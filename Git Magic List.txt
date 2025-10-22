@@ -91,3 +91,6 @@ git config --global http.sslverify "false"
 
 Xóa file khỏi remote nhưng giữ lại local
 git rm --cached <fileName>
+
+Kéo những commit remote hiện tại về r mới chồng cái commit local lên (useful khi commit trực tiếp vào dev?, thường là do local chưa pull bản mới nhất từ remote)
+git pull --rebase

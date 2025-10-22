@@ -13,11 +13,20 @@ rm -rf: delete
 sudo su: enter root mode
 pwd: current path
 cp: copy file
+mv: move file
+
+Cài fnm
+curl -fsSL https://fnm.vercel.app/install | bash
+
+Thêm vào ~/.zshrc
+eval "$(fnm env)"
 
 fnm list: show node version list
 fnm install [Node version]: install node version
 fnm uninstall [Node version]: remove node version
 fnm use [Node version]: use node version
+
+fnm install --lts
 
 Ctrl C: exit node repl/vim
 Ctrl L: clear log

@@ -1,0 +1,64 @@
+Create database (MariaDB)
+
+docker run --name mariadb \
+  -p 3306:3306 \
+  -v mariadb_data:/var/lib/mysql \
+  -e MARIADB_ROOT_PASSWORD=root \
+  -e MARIADB_DATABASE=ame_api \
+  -d mariadb:latest
+
+If you want mount your config
+docker run --name mariadb \
+  -p 3306:3306 \
+  -v mariadb_data:/var/lib/mysql \
+  -v ~/docker/mariadb/my.cnf:/etc/mysql/conf.d/my.cnf \
+  -e MARIADB_ROOT_PASSWORD=root \
+  -e MARIADB_DATABASE=ame_api \
+  -d mariadb:latest
+
+Example for config (will ignore optimistic locking, make it behavior like MySQL, not work btw)
+[mysqld]
+binlog_format=ROW
+
+Or using MySQL
+
+docker stop mariadb
+docker rm mariadb
+
+docker run --name mysql \
+  -p 3306:3306 \
+  -v mysql_data:/var/lib/mysql \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_DATABASE=ame_api \
+  -d mysql:latest
+
+docker run --name mysql \
+  -p 3306:3306 \
+  -v mysql_data:/var/lib/mysql \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_DATABASE=ame_api \
+  -d mysql:8
+
+docker run --name phpmyadmin \
+  -d --link mariadb:db \
+  -p 8081:80 \
+  -e PMA_HOST=mariadb \
+  phpmyadmin:latest
+
+Install SDKMan to control version
+
+curl -s "https://get.sdkman.io" | bash
+sdk version
+sdk install java 17.0.16-tem
+sdk install gradle (nếu ko có wrapper, gradlew)
+
+
+Then inside project, use
+
+chmod +x ./gradlew
+./gradlew build --refresh-dependencies
+./gradlew clean build 
+./gradlew bootRun
+./gradlew clean bootRun --refresh-dependencies --info
+./gradlew flywayMigrate
+./gradlew flywayRepair

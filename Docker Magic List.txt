@@ -22,6 +22,7 @@ docker run - it "image name": same above but with pseudo terminal so you can red
 docker run --name "name of container" "image name" : run image with custom container name
 
 docker rmi -f $(docker images -aq) : delete all images
+docker image prune -a: delete all unused and dangling images
 
 The internal IP of docker is 172.17.0.2
 The public IP of docker is 192.168.1.5 (need port mapping)
