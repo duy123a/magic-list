@@ -1,0 +1,38 @@
+1. Copy your private key to somewhere you know (like ~/.ssh)
+
+For this example this file is dehatest
+
+2. Set permission
+
+chmod 600 ~/.ssh/dehatest
+
+3. Connect
+
+ssh -i ~/.ssh/dehatest root@124.197.19.62
+
+124.197.19.62
+User: root
+Passphrase: NY%Cb%Bk1UavRFF&k&
+
+docker compose up -d --build s1_core
+docker compose up -d --build s2_core
+docker compose up -d --build s3_custom
+
+docker logs s1_core
+
+
+"Server=124.197.19.62,14333;Database=InMes_Deha;User ID=sa;Password=Deha@1234;TrustServerCertificate=True;"
+
+
+https://www.reddit.com/r/dotnet/comments/1dyjngv/openiddict_makes_my_brain_hurt/
+
+ss -tuln | grep -E '8080|8181'
+
+docker exec -it dev_azurite cat /workspace/debug.log
+
+docker ps -a --filter "name=dev_mssql"
+
+navigator.mediaDevices.getUserMedia({ video: true })
+
+systemctl | grep -E "nginx|apache|httpd|traefik|caddy|haproxy"
+

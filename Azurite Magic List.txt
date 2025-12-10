@@ -1,0 +1,45 @@
+Option 1
+
+docker run -d -p 10000:10000 --name azurite mcr.microsoft.com/azure-storage/azurite
+
+"ConnectionString": "UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://172.27.190.134:10000"
+
+In Azure Storage Explorer just choose Local storage emulator
+
+
+Option 2
+
+docker run -d --name dev_azurite -p 10010:10000 -p 10011:10001 -p 10012:10002 -v /opt/azurite:/workspace mcr.microsoft.com/azure-storage/azurite azurite --loose --blobHost 0.0.0.0 --blobPort 10000 --queueHost 0.0.0.0 --queuePort 10001 --location /workspace --debug /workspace/debug.log
+
+If docker compose
+
+azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: dev_azurite
+    command: >
+      azurite
+      --loose
+      --blobHost 0.0.0.0
+      --blobPort 10000
+      --queueHost 0.0.0.0
+      --queuePort 10001
+      --location /workspace
+      --debug /workspace/debug.log
+    ports:
+      - "10010:10000"  # Blob service
+      - "10011:10001"  # Queue service
+      - "10012:10002"  # Table service
+    volumes:
+      - ./azurite:/workspace
+    networks:
+      - mes_network
+
+Connect string
+
+Same env with docker
+
+"ConnectionString": "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://dev_azurite:10000/devstoreaccount1;QueueEndpoint=http://dev_azurite:10001/devstoreaccount1;"
+
+Outside (like Azure Storage Explorer)
+
+DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://124.197.19.62:10010/devstoreaccount1;
