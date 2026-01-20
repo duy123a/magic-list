@@ -15,8 +15,11 @@ User: root
 Passphrase: NY%Cb%Bk1UavRFF&k&
 
 docker compose up -d --build s1_core
+docker compose up -d --build s3_custom
 docker compose up -d --build s2_core
 docker compose up -d --build s3_custom
+
+docker compose restart s1_core s2_core s3_custom
 
 docker logs s1_core
 
@@ -35,4 +38,6 @@ docker ps -a --filter "name=dev_mssql"
 navigator.mediaDevices.getUserMedia({ video: true })
 
 systemctl | grep -E "nginx|apache|httpd|traefik|caddy|haproxy"
+
+systemctl reload nginx
 

@@ -1,0 +1,122 @@
+- Serve a static page
+
+services:
+  demo_planning:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: npx serve -l 5000
+    ports:
+      - "9696:5000"
+
+- Microservice MVC
+
+services:
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: dev_mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Deha@1234"
+    volumes:
+      - ./mssql/mssql_data:/var/opt/mssql
+    ports:
+      - "14333:1433"
+    networks:
+      - mes_network
+
+  redis:
+    image: redis:7
+    container_name: dev_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - mes_network
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: dev_azurite
+    command: >
+      azurite
+      --loose
+      --blobHost 0.0.0.0
+      --blobPort 10000
+      --queueHost 0.0.0.0
+      --queuePort 10001
+      --location /workspace
+      --debug /workspace/debug.log
+    ports:
+      - "10010:10000"  # Blob service
+      - "10011:10001"  # Queue service
+      - "10012:10002"  # Table service
+    volumes:
+      - ./azurite:/workspace
+    networks:
+      - mes_network
+
+  s1_core:
+    build:
+      context: .
+      dockerfile: S1.Core/Dockerfile
+    container_name: s1_core
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=dev_mssql;Database=InMes_Deha;User=sa;Password=Deha@1234;TrustServerCertificate=true"
+      ASPNETCORE_URLS: "http://+:8080"
+    ports:
+      - "5001:8080"
+    depends_on:
+      - mssql
+      - azurite
+    networks:
+      - mes_network
+      - reverse_proxy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/.well-known/openid-configuration || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  s2_core:
+    build:
+      context: .
+      dockerfile: S2.MES.Core/Dockerfile
+    container_name: s2_core
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=dev_mssql;Database=InMes_Deha;User=sa;Password=Deha@1234;TrustServerCertificate=true"
+    ports:
+      - "5002:8080"
+    depends_on:
+      - s1_core
+      - mssql
+    networks:
+      - mes_network
+      - reverse_proxy
+
+  s3_custom:
+    build:
+      context: .
+      dockerfile: S3.MES.Custom/Dockerfile
+    container_name: s3_custom
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=dev_mssql;Database=InMes_Deha;User=sa;Password=Deha@1234;TrustServerCertificate=true"
+    ports:
+      - "5003:8080"
+    depends_on:
+      - s1_core
+      - mssql
+    networks:
+      - mes_network
+      - reverse_proxy
+
+networks:
+  mes_network:
+    external: true
+  reverse_proxy:
+    name: reverse-proxy_default
+    external: true

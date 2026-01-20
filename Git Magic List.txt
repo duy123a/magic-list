@@ -69,7 +69,7 @@ Nếu nhánh đã được đẩy lên remote: Sau khi đổi tên nhánh cục 
 git push origin -u main
 git push origin --delete master
 
-Kéo commit mới nhất từ develop/main sang nhánh mình đang làm (ko show commit mới)
+Kéo commit mới nhất từ develop/main sang nhánh mình đang làm (nếu muốn đẩy phần mình làm lên trên cùng, phù hợp hơn nếu không có conflict)
 git rebase myfeature
 
 Show commit mới, cần thực hiện merge (phù hợp hơn nếu có conflict)
@@ -79,6 +79,12 @@ Git clone (hoặc bất kì thứ gì khác qua https) cần personal access ho�
 
 git clone https://duyhd:zTkppjy1S4sbP8G1qLes@gitlab.dehasoft.vn/deha-soft/jmu/bsac01/bsac01.git
 git clone https://duyhd:DAeoUj-S1oGztNqMnNAH@gitlab.dehasoft.vn/deha-soft/sfs/derppj/derp-api.git
+
+Hoặc dùng SSH Key
+
+ssh-keygen -t ed25519 -C "duyhd@deha-soft.com"
+cat ~/.ssh/id_ed25519.pub
+Add ssh key vào tài khoản gitlab
 
 Với duyhd là user name hoặc mail?
 zTkppjy1S4sbP8G1qLes là personal access hoặc password

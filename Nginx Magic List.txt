@@ -1,0 +1,66 @@
+server {
+    listen 80;
+    server_name inme.deha.vn;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name inme.deha.vn;
+
+    ssl_certificate     /etc/letsencrypt/live/inme.deha.vn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/inme.deha.vn/privkey.pem;
+
+    # Redirect root
+    location = / {
+        return 302 /s1/;
+    }
+
+    # ===== APP S1 =====
+    location /s1/ {
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header X-Forwarded-Prefix /s1;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+
+        proxy_buffer_size       128k;
+        proxy_buffers           4 256k;
+        proxy_busy_buffers_size 256k;
+        client_max_body_size 50M;
+
+        proxy_pass http://127.0.0.1:5001;
+    }
+
+    # ===== APP S2 =====
+    location /s2/ {
+        proxy_set_header X-Forwarded-Prefix /s2;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+
+        proxy_buffer_size       128k;
+        proxy_buffers           4 256k;
+        proxy_busy_buffers_size 256k;
+        client_max_body_size 50M;
+
+        proxy_pass http://127.0.0.1:5002;
+    }
+
+    # ===== APP S3 =====
+    location /s3/ {
+        proxy_set_header X-Forwarded-Prefix /s3;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+
+        proxy_buffer_size       128k;
+        proxy_buffers           4 256k;
+        proxy_busy_buffers_size 256k;
+        client_max_body_size 50M;
+
+        proxy_pass http://127.0.0.1:5003;
+    }
+}
