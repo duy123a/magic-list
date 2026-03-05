@@ -15,13 +15,16 @@ User: root
 Passphrase: NY%Cb%Bk1UavRFF&k&
 
 docker compose up -d --build s1_core
-docker compose up -d --build s3_custom
 docker compose up -d --build s2_core
 docker compose up -d --build s3_custom
 
 docker compose restart s1_core s2_core s3_custom
 
 docker logs s1_core
+
+docker logs --tail 100 s1_core (latest 100 line)
+
+docker restart dev_mssql
 
 
 "Server=124.197.19.62,14333;Database=InMes_Deha;User ID=sa;Password=Deha@1234;TrustServerCertificate=True;"
@@ -40,4 +43,6 @@ navigator.mediaDevices.getUserMedia({ video: true })
 systemctl | grep -E "nginx|apache|httpd|traefik|caddy|haproxy"
 
 systemctl reload nginx
+
+C:\Windows\System32\drivers\etc
 
