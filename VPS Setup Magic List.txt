@@ -1,0 +1,355 @@
+ssh root@103.98.152.173
+
+IP: 103.98.152.173
+User: root
+pass: Admin@@6789@@
+
+1. Test VPS
+
+cat /proc/cpuinfo
+
+free -h
+
+lsblk
+
+dd if=/dev/zero of=testfile bs=1G count=1 oflag=dsync
+
+grep "Failed password" /var/log/auth.log | tail
+
+sudo cat /var/log/auth.log | grep sshd | awk '{print $11}' | sort | uniq -c | sort -nr | head
+
+
+2. Change password auth to ssh auth (for less bot)
+
+ssh-keygen -t ed25519 -f ~/.ssh/inme_key
+ssh-keygen -t ed25519 -f C:/Users/duy12/.ssh/inme_key
+
+Enter passphrase
+
+v9$Kp7!Lx2@Qm4#Tz8^Dw3&Hs
+
+
+3. Copy public key to vps
+
+type $env:USERPROFILE\.ssh\inme_key.pub | ssh root@124.197.19.62 "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+
+
+4. Connect by ssh file
+
+ssh -i ~/.ssh/inme_key root@103.98.152.173
+
+IP: 103.98.152.173
+User: root
+pass: v9$Kp7!Lx2@Qm4#Tz8^Dw3&Hs
+
+
+5. Turn off password auth
+
+nano /etc/ssh/sshd_config
+
+Change
+
+PasswordAuthentication no
+
+Test
+
+sshd -t
+
+systemctl restart ssh
+
+
+6. Update
+
+apt update && apt upgrade -y
+
+apt autoremove -y
+
+
+7. Check reboot needed
+
+systemctl status ssh
+systemctl is-enabled ssh
+
+cat /var/run/reboot-required
+
+If need, go to reboot
+
+reboot
+
+8. Install git, docker and nginx
+
+a. Git
+apt install git -y
+
+b. Docker
+Read the damn guide in their website because it is long
+
+systemctl enable docker.service
+systemctl enable containerd.service
+
+Add rotate log docker
+
+/etc/docker/daemon.json
+
+{
+ "log-driver": "json-file",
+ "log-opts": {
+   "max-size": "10m",
+   "max-file": "3"
+ }
+}
+
+systemctl restart docker
+
+c. Nginx
+
+apt install nginx -y
+
+systemctl enable nginx
+
+
+9. Get SSL cert from Let's Encrypt (need to make sure domain already target our IP first)
+
+apt install certbot python3-certbot-nginx
+
+certbot certonly --nginx -d inme-prd.deha.vn (not automatically fix the nginx config)
+
+Add the cert in nginx config
+
+ssl_certificate /etc/letsencrypt/live/inme-prd.deha.vn/fullchain.pem;
+ssl_certificate_key /etc/letsencrypt/live/inme-prd.deha.vn/privkey.pem;
+
+systemctl reload nginx
+
+
+10. Create SSH key so you can add it some git
+
+ssh-keygen -t ed25519 -C "duyhd@deha-soft.com"
+
+Copy the public key to git
+
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+
+11. Install vpn (L2TP/IPsec VPN)
+
+Note: using nmcli maybe easier i think?
+
+apt install strongswan xl2tpd ppp lsof
+
+nano /etc/ipsec.conf
+
+config setup
+    uniqueids=no
+
+conn myvpn
+    keyexchange=ikev1
+    authby=secret
+    ike=aes256-sha1-modp1024,aes128-sha1-modp1024,3des-sha1-modp1024
+    esp=aes256-sha1,aes128-sha1,3des-sha1
+    type=transport
+    left=%defaultroute
+    leftprotoport=17/1701
+    right=118.70.67.199
+    rightprotoport=17/1701
+    forceencaps=yes
+    auto=add
+
+nano /etc/ipsec.secrets
+
+: PSK "your_shared_secret"
+
+nano /etc/xl2tpd/xl2tpd.conf
+
+[lac myvpn]
+lns = 118.70.67.199
+pppoptfile = /etc/ppp/options.l2tpd.client
+length bit = yes
+
+nano /etc/ppp/options.l2tpd.client
+
+ipcp-accept-local
+ipcp-accept-remote
+refuse-eap
+require-mschap-v2
+noccp
+noauth
+mtu 1280
+mru 1280
+noipdefault
+defaultroute
+usepeerdns
+connect-delay 5000
+name "duyhd@deha-soft.com"
+password "YOUR_PASSWORD"
+
+Then start your service
+
+systemctl restart strongswan-starter
+systemctl restart xl2tpd
+systemctl restart ipsec
+
+Connect vpn
+
+ipsec restart
+
+ipsec up myvpn
+
+If success, connect L2TP
+
+echo "c myvpn" | sudo tee /var/run/xl2tpd/l2tp-control
+
+Test
+
+ip a (having ppp0 meaning success connect)
+ip route (should having ppp0 in local)
+
+If want to disconnect
+
+echo "d myvpn" | sudo tee /var/run/xl2tpd/l2tp-control
+sudo ipsec down myvpn
+
+Next to force routing the github by vpn (do not change the default routing, or you lose SSH access)
+
+Find your git ip first
+
+nslookup gitlab.dehasoft.vn
+We will get the ip of the git: 124.197.19.23
+
+Then force routing it
+ip route add 124.197.19.23 dev ppp0
+
+Should work now
+
+Test
+
+curl -k -I https://gitlab.dehasoft.vn
+nc -zv gitlab.dehasoft.vn 443 (HTTPS)
+nc -zv gitlab.dehasoft.vn 22 (SSH)
+
+Change to HTTPS if needed
+
+git remote set-url origin https://duyhd:nabyZxXzefsjVjLpQc-w@gitlab.dehasoft.vn/deha-soft/sfs/inme01/mes.solution.git
+git config --global http.sslVerify false (https always need valid ssl, which some of them doesn't have)
+
+12. Setup docker to run
+
+Need docker-compose.yml in solution and Dockerfile in project
+
+Example docker compose
+
+services:
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: inme_mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Deha@1234"
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./mssql/mssql_data:/var/opt/mssql
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -C -U sa -P "Deha@1234" -Q "SELECT 1" -b -o /dev/null
+      interval: 1s
+      timeout: 45s
+      retries: 45
+      start_period: 3s
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: inme_azurite
+    command: >
+      azurite
+      --loose
+      --blobHost 0.0.0.0
+      --blobPort 10000
+      --queueHost 0.0.0.0
+      --queuePort 10001
+      --tableHost 0.0.0.0
+      --tablePort 10002
+      --location /workspace
+      --debug /workspace/debug.log
+    ports:
+      - "10010:10000"
+      - "10011:10001"
+      - "10012:10002"
+    volumes:
+      - ./azurite:/workspace
+
+  s1_core:
+    build:
+      context: .
+      dockerfile: S1.Core/Dockerfile
+    container_name: s1_core
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=mssql;Database=InMes_Deha;User=sa;Password=Deha@1234;TrustServerCertificate=true"
+    ports:
+      - "5001:8080"
+    depends_on:
+      mssql:
+        condition: service_healthy
+      azurite:
+        condition: service_started
+
+  s2_core:
+    build:
+      context: .
+      dockerfile: S2.MES.Core/Dockerfile
+    container_name: s2_core
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=mssql;Database=InMes_Deha;User=sa;Password=Deha@1234;TrustServerCertificate=true"
+    ports:
+      - "5002:8080"
+    depends_on:
+      mssql:
+        condition: service_healthy
+      s1_core:
+        condition: service_started
+
+  s3_custom:
+    build:
+      context: .
+      dockerfile: S3.MES.Custom/Dockerfile
+    container_name: s3_custom
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=mssql;Database=InMes_Deha;User=sa;Password=Deha@1234;TrustServerCertificate=true"
+    ports:
+      - "5003:8080"
+    depends_on:
+      mssql:
+        condition: service_healthy
+      s1_core:
+        condition: service_started
+
+Example Dockerfile
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /source
+
+# Copy toàn bộ solution (vì context là root)
+COPY . .
+
+RUN dotnet restore S1.Core/S1.Core.csproj
+RUN dotnet publish S1.Core/S1.Core.csproj -c Release -o /app
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+COPY --from=build /app .
+COPY --from=build /source/S1.Core/appsettings.json .
+
+-----------------------------------------------
+
+docker compose build --parallel
+docker compose up -d
+
+
+

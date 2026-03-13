@@ -10,9 +10,15 @@ chmod 600 ~/.ssh/dehatest
 
 ssh -i ~/.ssh/dehatest root@124.197.19.62
 
+ssh -i ~/.ssh/inme_key root@103.98.152.173
+
 124.197.19.62
 User: root
 Passphrase: NY%Cb%Bk1UavRFF&k&
+
+IP: 103.98.152.173
+User: root
+pass: v9$Kp7!Lx2@Qm4#Tz8^Dw3&Hs
 
 docker compose up -d --build s1_core
 docker compose up -d --build s2_core
