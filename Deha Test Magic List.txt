@@ -20,9 +20,15 @@ IP: 103.98.152.173
 User: root
 pass: v9$Kp7!Lx2@Qm4#Tz8^Dw3&Hs
 
+apt update && apt upgrade -y
+apt autoremove -y
+
 docker compose up -d --build s1_core
 docker compose up -d --build s2_core
 docker compose up -d --build s3_custom
+
+docker compose build --parallel
+docker compose up -d
 
 docker compose restart s1_core s2_core s3_custom
 
@@ -51,4 +57,20 @@ systemctl | grep -E "nginx|apache|httpd|traefik|caddy|haproxy"
 systemctl reload nginx
 
 C:\Windows\System32\drivers\etc
+
+Clean old cache (docker always cache older build/image)
+
+Check storage
+
+df -h
+docker system df -v
+
+-----------------------------------------------------------
+
+docker builder prune -a
+docker image prune -a
+
+OR
+
+docker system prune -a --volumes
 

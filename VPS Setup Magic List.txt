@@ -332,19 +332,37 @@ services:
 
 Example Dockerfile
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /source
 
-# Copy toàn bộ solution (vì context là root)
+# 1. Copy solution file and project files first (for better layer caching)
+COPY *.sln ./
+COPY S1.Core/*.csproj S1.Core/
+COPY S2.MES.Core/*.csproj S2.MES.Core/
+COPY S3.MES.Custom/*.csproj S3.MES.Custom/
+COPY MES.Shared/*.csproj MES.Shared/
+
+# 2. Restore dependencies (this layer will be cached unless .csproj changes)
+RUN dotnet restore S1.Core/S1.Core.csproj
+
+# 3. Copy the remaining source code
 COPY . .
 
-RUN dotnet restore S1.Core/S1.Core.csproj
+# 4. Build and publish the application
 RUN dotnet publish S1.Core/S1.Core.csproj -c Release -o /app
 
+# Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
+
+# Copy published output from build stage
 COPY --from=build /app .
+
+# Copy configuration file (if needed separately)
 COPY --from=build /source/S1.Core/appsettings.json .
+
+# Start the application
+ENTRYPOINT ["dotnet", "S1.Core.dll"]
 
 -----------------------------------------------
 
@@ -352,4 +370,102 @@ docker compose build --parallel
 docker compose up -d
 
 
+13. Backup database
 
+mkdir -p /backup/sql
+nano /backup/backup.sh
+
+#!/bin/bash
+
+set -e
+
+DATE=$(date +%F_%H-%M-%S)
+DB_NAME="InMes_Deha"
+CONTAINER_NAME="inme_mssql"
+
+BACKUP_DIR="/backup/sql"
+BACKUP_FILE="/var/opt/mssql/backup_${DB_NAME}_$DATE.bak"
+HOST_FILE="/root/project/mes.solution/mssql/mssql_data/backup_${DB_NAME}_$DATE.bak"
+
+# Create backup directory if it does not exist
+mkdir -p $BACKUP_DIR
+
+echo "=== Start backup: $DATE ==="
+
+# 1. Run backup inside the container
+docker exec $CONTAINER_NAME /opt/mssql-tools18/bin/sqlcmd \
+ -S localhost -U sa -P 'Deha@1234' -C \
+ -Q "BACKUP DATABASE [$DB_NAME] TO DISK = N'$BACKUP_FILE' WITH INIT, STATS = 10"
+
+# 2. Move backup file from mounted volume to backup directory
+mv $HOST_FILE $BACKUP_DIR/
+
+# 3. Compress the backup file using gzip
+gzip $BACKUP_DIR/backup_${DB_NAME}_$DATE.bak
+
+# 4. Remove backup files older than 3 days
+find $BACKUP_DIR -type f -name "*.gz" -mtime +3 -delete
+
+echo "=== Done backup: $DATE ==="
+
+--------------------------------------------- Or using this (if you don't want to deal with absolutely path of HOST_FILE, note that cron does not understand relative path)
+
+#!/bin/bash
+
+set -e
+
+DATE=$(date +%F_%H-%M-%S)
+DB_NAME="InMes_Deha"
+CONTAINER_NAME="inme_mssql"
+
+BACKUP_DIR="/backup/sql"
+CONTAINER_BACKUP_FILE="/var/opt/mssql/backup_${DB_NAME}_$DATE.bak"
+FINAL_FILE="$BACKUP_DIR/backup_${DB_NAME}_$DATE.bak"
+
+LOG_FILE="/backup/backup.log"
+
+mkdir -p $BACKUP_DIR
+
+echo "=== Start backup: $DATE ===" >> $LOG_FILE
+
+# 1. Backup inside container
+docker exec $CONTAINER_NAME /opt/mssql-tools18/bin/sqlcmd \
+ -S localhost -U sa -P 'Deha@1234' -C \
+ -Q "BACKUP DATABASE [$DB_NAME] TO DISK = N'$CONTAINER_BACKUP_FILE' WITH INIT, STATS = 10" \
+ >> $LOG_FILE 2>&1
+
+# 2. Copy file from container → host
+docker cp $CONTAINER_NAME:$CONTAINER_BACKUP_FILE $FINAL_FILE
+
+# 3. Remove file inside container (optional but recommended)
+docker exec $CONTAINER_NAME rm -f $CONTAINER_BACKUP_FILE
+
+# 4. Compress
+gzip $FINAL_FILE
+
+# 5. Cleanup old backups (older than 30 days)
+find $BACKUP_DIR -type f -name "*.gz" -mtime +30 -delete
+
+echo "=== Done backup: $DATE ===" >> $LOG_FILE
+
+---------------------------------------------
+
+Add permission
+
+chmod +x /backup/backup.sh
+
+Run cron job
+
+timedatectl (check timezone)
+timedatectl set-timezone Asia/Ho_Chi_Minh
+
+systemctl status cron (check cron status)
+crontab -e
+
+0 2 * * * /backup/backup.sh >> /backup/log.txt 2>&1
+
+Check size
+
+ls -lh
+df -h
+docker system df

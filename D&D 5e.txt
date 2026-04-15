@@ -1,0 +1,83 @@
+### **Core Systems**
+
+✅ **Campaign Management**
+
+- Theme and difficulty selection
+
+- Party creation and management
+
+- Campaign state persistence
+
+✅ **Character System (Full D&D 5e)**
+
+- 12 classes (Barbarian, Bard, Cleric, Druid, Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard)
+
+- 9 races (Human, Elf, Dwarf, Halfling, Dragonborn, Gnome, Half-Elf, Half-Orc, Tiefling)
+
+- Point-buy ability score system (27 points)
+
+- Full character sheets with stats, skills, saves
+
+- Character creator wizard (4 steps)
+
+✅ **XP & Leveling System**
+
+- Automatic XP detection from narration
+
+- XP awards for: combat (25-5900 XP), puzzles (50 XP), quests (150 XP), discoveries (100 XP)
+
+- Automatic level-up with HP increases
+
+- Epic level-up animation with sparkles
+
+- XP toast notifications
+
+✅ **Combat System**
+
+- Initiative tracking with automatic rolls
+
+- Turn-based combat flow
+
+- Enemy templates (Goblin, Skeleton, Orc, Bugbear, Ogre, Troll, Young Dragon)
+
+- Attack rolls (d20 + bonus vs AC)
+
+- Damage rolls with critical hits (natural 20)
+
+- Fumbles (natural 1)
+
+- Auto enemy AI turns
+
+- Combat log
+
+- XP rewards on victory
+
+✅ **Voice & Audio**
+
+- Dynamic character voice selection based on description
+
+- Narrative parsing for dialogue
+
+- Sound effect detection (birds, wind, combat, etc.)
+
+- Background sound effects during narration
+
+6. ✅ **Save/Load System**
+
+- Multiple save slots
+
+- Auto-save after each turn
+
+- Save metadata (timestamp, play time, preview)
+
+- Export/import saves as JSON
+
+- Delete saves
+
+7. ✅ **Dice Rolling**
+
+- d4, d6, d8, d10, d12, d20
+
+- Visual feedback
+
+- Integration with combat
