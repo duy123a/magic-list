@@ -469,3 +469,10 @@ Check size
 ls -lh
 df -h
 docker system df
+
+-----------------------------------------------
+
+Format json file in linux
+
+sudo apt install jq
+jq . appsettings.json > tmp.json && mv tmp.json appsettings.json
