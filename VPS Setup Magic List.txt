@@ -462,7 +462,11 @@ timedatectl set-timezone Asia/Ho_Chi_Minh
 systemctl status cron (check cron status)
 crontab -e
 
+# Backup database everyday at 2 a.m
 0 2 * * * /backup/backup.sh >> /backup/log.txt 2>&1
+
+# Clean cache every day at 3 a.m
+0 3 * * * /usr/bin/docker system prune -af --filter "until=24h" > /dev/null 2>&1
 
 Check size
 

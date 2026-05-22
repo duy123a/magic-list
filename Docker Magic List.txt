@@ -1,3 +1,18 @@
+(/etc/docker/daemon.json)
+{
+  "builder": {
+    "gc": {
+      "defaultKeepStorage": "5GB",
+      "enabled": true
+    }
+  },
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  }
+}
+
 (sudo)
 docker run "image name" : run image (and download/install if it doesn't has)
 docker start 'container id/ container name': start containter again
