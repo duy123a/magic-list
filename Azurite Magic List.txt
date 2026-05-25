@@ -43,3 +43,9 @@ Same env with docker
 Outside (like Azure Storage Explorer)
 
 DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://124.197.19.62:10010/devstoreaccount1;
+
+Option 3
+
+You can use connect string just like this if host local: 
+
+UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://127.0.0.1

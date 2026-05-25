@@ -1,1 +1,13 @@
 docker run -d --name mailpit -p 8025:8025 -p 1025:1025 -v mailpit_data:/data -e MP_UI_AUTH="admin:7551656as" -e MP_MAX_MESSAGES=10000 axllent/mailpit
+
+Connection string
+
+{
+  "Smtp": {
+    "Host": "localhost",
+    "Port": 1025,
+    "Username": "",
+    "Password": "",
+    "EnableSsl": false
+  }
+}
