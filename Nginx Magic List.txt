@@ -7,7 +7,7 @@ I. For local
 - Add PATH
 
 
-2. Create C:\nginx\conf\sites-enabled\
+2. Create C:\nginx\sites-enabled\
 
 Modify C:\nginx\conf\nginx.conf to something like this
 
@@ -110,7 +110,11 @@ nginx -s stop
 
 nginx -t 
 
+nginx -T (very useful to check if nginx have load the config)
+
 taskkill /F /IM nginx.exe
+
+netstat -ano | findstr :80 (check if nginx not start)
 
 
 II. For server test

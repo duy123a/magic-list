@@ -1,0 +1,253 @@
+✔ 1. Bản chất của Index trong database
+
+Index là một cấu trúc dữ liệu phụ (auxiliary data structure) được DBMS tạo ra để:
+
+Tăng tốc truy vấn dữ liệu
+Giảm số lượng bản ghi phải đọc từ disk
+
+Về mặt kỹ thuật, index thường được implement bằng:
+
+B-Tree / B+Tree (phổ biến nhất trong SQL Server, MySQL InnoDB)
+hoặc Hash Index (ít dùng hơn, chỉ trong case đặc biệt)
+
+Trong thực tế DB dùng B+Tree:
+
+👉 khác B-Tree ở chỗ:
+
+Data chỉ nằm ở leaf node
+Leaf nodes thường linked list với nhau (hỗ trợ range scan)
+
+👉 Quan trọng:
+Index không phải là “feature phụ”, mà là một cách tổ chức lại dữ liệu theo một key khác với table gốc.
+
+✔ 2. Cách hoạt động (điểm ăn tiền khi phỏng vấn)
+
+Không có index:
+
+DB phải làm Full Table Scan
+Nghĩa là đọc từng row trong bảng và so sánh điều kiện
+
+Có index:
+
+DB đi vào cây B-Tree
+So sánh theo từng node (giống binary search mở rộng)
+Tìm ra vị trí dữ liệu trong vài bước
+
+Ví dụ:
+
+Index (Email - BTree)
+
+               [m@gmail.com]
+              /             \
+     [a@gmail.com]       [z@gmail.com]
+
+Query:
+
+SELECT * FROM Users WHERE Email = 'z@gmail.com'
+
+👉 DB không đọc toàn bộ bảng
+👉 Nó traverse cây → O(log N) thay vì O(N)
+
+✔ 3. Index thực sự lưu cái gì?
+
+Đây là chỗ nhiều người trả lời sai.
+
+Index không lưu full data row.
+
+Nó lưu:
+
+Key (cột được index)
+Pointer (row locator)
+
+Ví dụ:
+
+Index:
+Email        → Row Address
+abc@gmail    → 0x123
+xyz@gmail    → 0x456
+
+👉 Khi tìm thấy key → DB nhảy thẳng tới data row trong table
+
+✔ 4. Clustered vs Non-clustered (cực hay bị hỏi)
+✔ Clustered Index
+Quyết định cách dữ liệu vật lý được sắp xếp trong table
+Table chỉ có 1 clustered index
+
+👉 Ví dụ: Primary Key thường là clustered index
+
+✔ Non-clustered Index
+Là cấu trúc riêng biệt
+Không thay đổi thứ tự dữ liệu trong table
+Có thể có nhiều cái
+✔ 5. Index dùng cho cột nào?
+
+Không phụ thuộc “số hay chữ”, mà phụ thuộc selectivity + query pattern
+
+✔ Nên index khi:
+Cột hay dùng trong WHERE
+JOIN
+ORDER BY
+
+Ví dụ:
+
+UserId (int)
+Email (string)
+CreatedDate (datetime)
+✔ Không nên index khi:
+Cột có ít giá trị khác nhau (low cardinality)
+Gender (Male/Female)
+Status (0/1)
+Bảng nhỏ
+Cột ít query
+✔ 6. Trade-off (điểm rất quan trọng)
+
+Index không miễn phí.
+
+✔ Lợi ích:
+SELECT nhanh hơn rất nhiều
+❌ Chi phí:
+INSERT / UPDATE / DELETE chậm hơn
+Tốn storage
+DB phải update cả index tree
+
+👉 Vì vậy index là bài toán trade-off giữa read vs write
+
+✔ 7. Câu trả lời phỏng vấn “chuẩn”
+
+Nếu trả lời trọn gói, có thể nói như này:
+
+Index là một cấu trúc dữ liệu phụ trong database (thường là B-Tree) dùng để tối ưu truy vấn bằng cách giảm số lượng bản ghi phải scan.
+Thay vì quét toàn bộ table (O(n)), database sử dụng index để tìm vị trí dữ liệu thông qua cây tìm kiếm (thường O(log n)).
+Index lưu key của cột được index và pointer tới row dữ liệu, giúp DB truy xuất trực tiếp đến record thay vì đọc toàn bộ bảng.
+Tuy nhiên index cũng có chi phí vì làm chậm các thao tác insert/update/delete và tốn thêm storage, nên cần thiết kế dựa trên query pattern chứ không nên lạm dụng.
+
+----------------------------------------------
+
+1. Composite index là gì?
+
+Composite index (hay multi-column index) là index được tạo trên từ 2 cột trở lên.
+
+Ví dụ:
+
+CREATE INDEX IX_User_Email_Status
+ON Users (Email, Status);
+✔ Bản chất hoạt động (điểm quan trọng khi phỏng vấn)
+
+Composite index không phải 2 index riêng lẻ, mà là một cấu trúc B-Tree duy nhất, trong đó key được ghép theo thứ tự cột:
+
+(Email, Status)
+
+DB sẽ sort theo:
+
+Email trước
+Nếu Email giống nhau → mới xét Status
+✔ Ví dụ dữ liệu trong index
+abc@gmail.com | 0
+abc@gmail.com | 1
+bcd@gmail.com | 0
+bcd@gmail.com | 1
+
+👉 Nó giống như sort nhiều cấp (giống ORDER BY nhiều cột)
+
+✔ Quy tắc cực quan trọng: “Left-most prefix”
+
+Index (A, B, C) sẽ hỗ trợ:
+
+WHERE A
+WHERE A + B
+WHERE A + B + C
+
+❌ Nhưng KHÔNG tối ưu cho:
+
+WHERE B
+WHERE C
+WHERE B + C
+
+👉 Vì B-tree được xây theo thứ tự A trước
+
+✔ Khi nào dùng composite index?
+
+Dùng khi query hay đi cùng nhau:
+
+SELECT * FROM Users
+WHERE Email = 'abc@gmail.com'
+AND Status = 1
+
+👉 Index (Email, Status) sẽ rất hiệu quả
+
+✔ 2. Index theo cột chữ (string) nó sắp xếp thế nào?
+
+Câu hỏi này hay bị hiểu sai.
+
+❌ KHÔNG phải theo Unicode kiểu Unikey hay tiếng Việt
+
+Database không biết Unikey
+
+Nó sắp xếp theo:
+
+Collation (quy tắc so sánh chuỗi của database)
+
+✔ Collation là gì?
+
+Collation quyết định:
+
+so sánh chữ hoa/thường
+có phân biệt dấu không
+thứ tự ký tự (a < b < c ...)
+
+Ví dụ trong SQL Server:
+
+Latin1_General_CI_AS (phổ biến)
+CI = Case Insensitive (A = a)
+AS = Accent Sensitive (có dấu là khác)
+✔ Ví dụ thực tế
+
+Giả sử index theo Email:
+
+a@gmail.com
+A@gmail.com
+b@gmail.com
+
+Nếu CI (case-insensitive):
+
+a@gmail.com = A@gmail.com
+
+→ DB coi như cùng nhóm, sắp xếp gần nhau
+
+✔ Với tiếng Việt có dấu thì sao?
+
+Ví dụ:
+
+an
+á
+à
+b
+c
+
+👉 Thứ tự này không phải Unicode thuần
+
+Mà phụ thuộc collation tiếng Việt, ví dụ:
+
+SQL Server Vietnamese_CI_AS
+MySQL utf8mb4_vietnamese_ci
+
+👉 DB sẽ hiểu:
+
+“a, á, à” được nhóm theo rule ngôn ngữ
+không phải theo mã Unicode raw
+✔ Bản chất quan trọng nhất
+
+👉 Index không “tự nghĩ” cách sắp xếp
+
+Nó chỉ:
+
+lưu key dạng binary
+so sánh bằng collation rules
+✔ Tóm lại (kiểu phỏng vấn)
+Composite index:
+
+Là index nhiều cột, trong đó dữ liệu được sắp xếp theo thứ tự cột từ trái sang phải, và hỗ trợ truy vấn theo left-most prefix rule.
+
+String index sorting:
+
+Không theo Unikey hay Unicode thuần, mà theo collation của database. Collation định nghĩa cách so sánh chuỗi (case, dấu, thứ tự ký tự), nên cùng một dữ liệu có thể sắp xếp khác nhau tùy DB setting.

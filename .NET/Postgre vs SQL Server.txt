@@ -1,0 +1,54 @@
+Nếu đi phỏng vấn .NET và được hỏi:
+
+"Tại sao chọn PostgreSQL thay vì SQL Server?"
+
+thì có thể trả lời ngắn gọn như sau:
+
+PostgreSQL có một số ưu điểm nổi bật:
+
+1. Miễn phí hoàn toàn
+
+Không có chi phí license như SQL Server Standard/Enterprise.
+Phù hợp với startup, SaaS và hệ thống triển khai nhiều môi trường.
+
+2. Hỗ trợ Linux và Docker rất tốt
+
+Thường được dùng trong stack hiện đại:
+ASP.NET Core
+PostgreSQL
+Redis
+Docker/Kubernetes
+
+3. JSONB mạnh hơn SQL Server
+
+Lưu và query dữ liệu JSON hiệu quả.
+Có thể đánh index trực tiếp trên dữ liệu JSON.
+Phù hợp với dữ liệu bán cấu trúc.
+
+4. Search Path hỗ trợ multi-tenant tốt
+
+Có thể cấu hình schema mặc định theo connection.
+
+Ví dụ:
+
+Search Path=tenant1,public
+Giúp chuyển tenant dễ dàng mà không cần thay đổi câu SQL.
+
+5. Có xmin để hỗ trợ optimistic concurrency
+
+Là cột hệ thống được PostgreSQL quản lý tự động.
+Mỗi lần row được cập nhật, phiên bản của row sẽ thay đổi.
+Có thể dùng tương tự rowversion của SQL Server trong EF Core để tránh ghi đè dữ liệu đồng thời.
+
+6. Nhiều kiểu dữ liệu nâng cao
+
+jsonb
+array
+enum
+range
+Các kiểu dữ liệu này được hỗ trợ native, giúp thiết kế dữ liệu linh hoạt hơn.
+Tuy nhiên SQL Server vẫn có ưu thế ở:
+Hệ sinh thái Microsoft mạnh.
+Công cụ quản trị tốt (SSMS, Profiler, SQL Agent).
+Tích hợp Azure và Active Directory tốt.
+Nhiều doanh nghiệp lớn đã sử dụng lâu năm.
