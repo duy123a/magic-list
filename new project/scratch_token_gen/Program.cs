@@ -42,141 +42,29 @@ class Program
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
         
         Console.WriteLine("=================================================");
-        Console.WriteLine("       AC03001 & AD08001 API TEST SUITE          ");
+        Console.WriteLine("          AD08001 SEARCH API TEST                ");
         Console.WriteLine("=================================================\n");
 
-        // ---------------- AC03001 TESTS ----------------
-        Console.WriteLine("--- AC03001: 1. GET /api/master/form-config/AC03001 ---");
-        await TestApiAsync(client, HttpMethod.Get, "http://localhost:7192/api/master/form-config/AC03001");
-
-        Console.WriteLine("\n--- AC03001: 2. POST /api/sales/shipment-assign/ac03001/search (Unassigned mode) ---");
-        var searchAc03001Wait = @"{ ""shipmentAssignStatus"": ""0"" }";
-        await TestApiAsync(client, HttpMethod.Post, "http://localhost:7192/api/sales/shipment-assign/ac03001/search", searchAc03001Wait);
-
-        Console.WriteLine("\n--- AC03001: 3. POST /api/sales/shipment-assign/ac03001/search (Assigned mode) ---");
-        var searchAc03001Done = @"{ ""shipmentAssignStatus"": ""1"" }";
-        await TestApiAsync(client, HttpMethod.Post, "http://localhost:7192/api/sales/shipment-assign/ac03001/search", searchAc03001Done);
-
-        Console.WriteLine("\n--- AC03001: 4. GET /api/sales/shipment-assign/ac03001/qtty-conversion ---");
-        await TestApiAsync(client, HttpMethod.Get, "http://localhost:7192/api/sales/shipment-assign/ac03001/qtty-conversion?qtty=10&origUnitCd=EA&destUnitCd=EA&articleCd=ART01");
-
-        Console.WriteLine("\n--- AC03001: 5. GET /api/sales/shipment-assign/ac03001/pkg-qtty-conversion ---");
-        await TestApiAsync(client, HttpMethod.Get, "http://localhost:7192/api/sales/shipment-assign/ac03001/pkg-qtty-conversion?qtty=10&origUnitCd=EA&pkgUnitCd=BOX&articleCd=ART01");
-
-        Console.WriteLine("\n--- AC03001: 6. GET /api/sales/shipment-assign/ac03001/lot-qtty-conversion ---");
-        await TestApiAsync(client, HttpMethod.Get, "http://localhost:7192/api/sales/shipment-assign/ac03001/lot-qtty-conversion?qtty=10&origUnitCd=EA&destUnitCd=EA&articleCd=ART01");
-
-        Console.WriteLine("\n--- AC03001: 7. POST /api/sales/shipment-assign/ac03001 (Registration) ---");
-        var createAc03001Body = @"{
-            ""isShipmentInstructionGrouped"": true,
-            ""shipmentAssignDtlList"": [
-                {
-                    ""salesOrderNo"": ""SO99999"",
-                    ""salesOrderRowNo"": 1,
-                    ""modelState"": ""Added"",
-                    ""ctrlerCd"": ""67890"",
-                    ""shipmentAssignDate"": ""2026-07-22T00:00:00Z"",
-                    ""shipmentDate"": ""2026-07-22T00:00:00Z"",
-                    ""shipmentAssignQtty"": 5,
-                    ""deliveryScheduledDate"": ""2026-07-25T00:00:00Z"",
-                    ""deliveryScheduledTimeSec"": ""1"",
-                    ""carrierCd"": ""101""
-                }
-            ]
+        Console.WriteLine("--- POST /api/sales/shipment/ad08001/search ---");
+        var searchBody = @"{
+            ""baseCd"": ""hn"",
+            ""salesInspectionSec"": ""1"",
+            ""shipmentDateFrom"": null,
+            ""shipmentDateTo"": null,
+            ""shipmentNo"": null,
+            ""shipmentCtrlerCd"": null,
+            ""clientCd"": null,
+            ""deliveryDestCd"": null,
+            ""salesOrderDateFrom"": null,
+            ""salesOrderDateTo"": null,
+            ""salesOrderNo"": null,
+            ""articleCd"": null,
+            ""articleName1"": null,
+            ""articleName2"": null,
+            ""earmarkingSalesSec"": null,
+            ""transactionSec"": null
         }";
-        await TestApiAsync(client, HttpMethod.Post, "http://localhost:7192/api/sales/shipment-assign/ac03001", createAc03001Body);
-
-        Console.WriteLine("\n--- AC03001: 8. PUT /api/sales/shipment-assign/ac03001 (Modify) ---");
-        var modifyAc03001Body = @"{
-            ""shipmentAssignDtlList"": [
-                {
-                    ""shipmentAssignNo"": ""SA99999"",
-                    ""shipmentAssignRowNo"": 1,
-                    ""salesOrderNo"": ""SO99999"",
-                    ""salesOrderRowNo"": 1,
-                    ""modelState"": ""Modified"",
-                    ""ctrlerCd"": ""67890"",
-                    ""shipmentAssignDate"": ""2026-07-22T00:00:00Z"",
-                    ""shipmentDate"": ""2026-07-22T00:00:00Z"",
-                    ""shipmentAssignQtty"": 5,
-                    ""deliveryScheduledDate"": ""2026-07-25T00:00:00Z"",
-                    ""deliveryScheduledTimeSec"": ""1"",
-                    ""carrierCd"": ""101"",
-                    ""shipmentAssignRv"": 1,
-                    ""dtlRv"": 1
-                }
-            ]
-        }";
-        await TestApiAsync(client, HttpMethod.Put, "http://localhost:7192/api/sales/shipment-assign/ac03001", modifyAc03001Body);
-
-        // ---------------- AD08001 TESTS ----------------
-        Console.WriteLine("\n\n--- AD08001: 1. GET /api/master/form-config/AD08001 ---");
-        await TestApiAsync(client, HttpMethod.Get, "http://localhost:7192/api/master/form-config/AD08001");
-
-        Console.WriteLine("\n--- AD08001: 2. POST /api/sales/shipment/ad08001/search (Inspection pending) ---");
-        var searchAd08001Wait = @"{ ""baseCd"": ""B01"", ""salesInspectionSec"": ""1"" }";
-        await TestApiAsync(client, HttpMethod.Post, "http://localhost:7192/api/sales/shipment/ad08001/search", searchAd08001Wait);
-
-        Console.WriteLine("\n--- AD08001: 3. POST /api/sales/shipment/ad08001/search (Inspection completed) ---");
-        var searchAd08001Done = @"{ ""baseCd"": ""B01"", ""salesInspectionSec"": ""2"" }";
-        await TestApiAsync(client, HttpMethod.Post, "http://localhost:7192/api/sales/shipment/ad08001/search", searchAd08001Done);
-
-        Console.WriteLine("\n--- AD08001: 4. POST /api/sales/shipment/ad08001/detail-amount-and-tax ---");
-        var recalcAd08001Body = @"{
-            ""inspectionQtty"": 10,
-            ""inspectionUnitPrice"": 100,
-            ""taxationMethodSec"": ""1"",
-            ""taxRate"": 0.1,
-            ""currencyCd"": ""JPY"",
-            ""currencyRate"": 1,
-            ""clientCd"": ""CL01"",
-            ""inspectionDate"": ""2026-07-22""
-        }";
-        await TestApiAsync(client, HttpMethod.Post, "http://localhost:7192/api/sales/shipment/ad08001/detail-amount-and-tax", recalcAd08001Body);
-
-        Console.WriteLine("\n--- AD08001: 5. POST /api/sales/shipment/ad08001 (New Inspection) ---");
-        var createAd08001Body = @"{
-            ""salesInspectionList"": [
-                {
-                    ""rowNo"": 1,
-                    ""modelState"": ""Added"",
-                    ""salesOrderNo"": ""SO99999"",
-                    ""salesOrderDtlNo"": 1,
-                    ""inspectionCtrlerCd"": ""67890"",
-                    ""inspectionDate"": ""2026-07-22T00:00:00Z"",
-                    ""billingBaseDate"": ""2026-07-22T00:00:00Z"",
-                    ""inspectionQtty"": 5,
-                    ""inspectionUnitPrice"": 100,
-                    ""currencyRate"": 1,
-                    ""adjustmentAmount"": 0
-                }
-            ]
-        }";
-        await TestApiAsync(client, HttpMethod.Post, "http://localhost:7192/api/sales/shipment/ad08001", createAd08001Body);
-
-        Console.WriteLine("\n--- AD08001: 6. PUT /api/sales/shipment/ad08001 (Modify Inspection) ---");
-        var modifyAd08001Body = @"{
-            ""salesInspectionList"": [
-                {
-                    ""rowNo"": 1,
-                    ""modelState"": ""Modified"",
-                    ""salesOrderNo"": ""SO99999"",
-                    ""salesOrderDtlNo"": 1,
-                    ""salesInspectionNo"": ""SI99999"",
-                    ""salesInspectionDtlNo"": 1,
-                    ""salesInspectionRv"": ""1"",
-                    ""salesInspectionDtlRv"": ""1"",
-                    ""inspectionCtrlerCd"": ""67890"",
-                    ""inspectionDate"": ""2026-07-22T00:00:00Z"",
-                    ""billingBaseDate"": ""2026-07-22T00:00:00Z"",
-                    ""inspectionQtty"": 5,
-                    ""inspectionUnitPrice"": 100,
-                    ""currencyRate"": 1,
-                    ""adjustmentAmount"": 0
-                }
-            ]
-        }";
-        await TestApiAsync(client, HttpMethod.Put, "http://localhost:7192/api/sales/shipment/ad08001", modifyAd08001Body);
+        await TestApiAsync(client, HttpMethod.Post, "http://localhost:7192/api/sales/shipment/ad08001/search", searchBody);
 
         Console.WriteLine("\n=================================================");
         Console.WriteLine("              TEST SUITE COMPLETE                ");
