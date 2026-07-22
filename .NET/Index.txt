@@ -14,13 +14,13 @@ Trong thực tế DB dùng B+Tree:
 
 👉 khác B-Tree ở chỗ:
 
-Data chỉ nằm ở leaf node
+Data chỉ nằm ở leaf node (ở B-Tree data nằm ở cả internal node và leaf node)
 Leaf nodes thường linked list với nhau (hỗ trợ range scan)
 
 👉 Quan trọng:
 Index không phải là “feature phụ”, mà là một cách tổ chức lại dữ liệu theo một key khác với table gốc.
 
-✔ 2. Cách hoạt động (điểm ăn tiền khi phỏng vấn)
+✔ 2. Cách hoạt động
 
 Không có index:
 

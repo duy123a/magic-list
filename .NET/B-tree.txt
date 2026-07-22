@@ -1,0 +1,207 @@
+B-Tree (Balanced Tree) là một cấu trúc dữ liệu dạng cây cân bằng, được tối ưu cho việc lưu trữ và tìm kiếm dữ liệu trên đĩa. Mỗi node có thể chứa nhiều key, nhờ đó giảm chiều cao của cây và giảm số lần truy cập đĩa khi tìm kiếm.
+
+Sau đó nói về thành phần của một node:
+
+Một node trong B-Tree thường gồm:
+
+Keys: các giá trị dùng để so sánh và điều hướng việc tìm kiếm.
+Values (Payload): dữ liệu tương ứng với mỗi key, có thể là bản ghi hoặc con trỏ (Row ID/Primary Key) tới bản ghi.
+Child Pointers: con trỏ tới các node con (internal node mới có).
+
+Ví dụ:
+
+        [10 | 20 | 35]
+       /    |     |    \
+
+Thực chất bên trong node có dạng:
+
+P0
+(Key10, Value10)
+P1
+(Key20, Value20)
+P2
+(Key35, Value35)
+P3
+
+Trong đó:
+
+Key: dùng để tìm kiếm.
+Value: dữ liệu hoặc địa chỉ tới dữ liệu.
+P: con trỏ tới node con.
+
+Nếu người phỏng vấn hỏi tiếp:
+
+"Thế B+Tree khác gì?"
+
+Bạn trả lời:
+
+B+Tree là biến thể của B-Tree. Khác biệt lớn nhất là internal node chỉ chứa key và child pointers, không chứa value. Value chỉ nằm ở leaf node, và các leaf node được liên kết với nhau bằng linked list để tối ưu các truy vấn phạm vi (BETWEEN, <, >, ORDER BY).
+
+----------------------------------------------------------------------------------
+
+Điểm khác biệt cốt lõi giữa B-Tree và B+Tree là nơi lưu dữ liệu.
+
+Đầu tiên, hình dung một cây đơn giản:
+
+          [20 | 40]
+         /    |    \
+      ...   ...    ...
+
+Mỗi node chứa các key để điều hướng.
+
+B-Tree
+
+Trong B-Tree, mọi node đều có thể chứa dữ liệu.
+
+Ví dụ:
+
+          [20* | 40*]
+         /      |      \
+   [10*]    [30*]    [50*]
+
+Dấu * nghĩa là node đó chứa luôn record (hoặc pointer đến record).
+
+Nếu tìm key = 20:
+
+Vào root
+Thấy ngay 20
+Lấy dữ liệu
+Không cần xuống lá.
+
+Nghĩa là internal node và leaf node đều có dữ liệu.
+
+B+Tree
+
+Trong B+Tree, internal node chỉ dùng để dẫn đường.
+
+          [20 | 40]
+         /    |    \
+       /      |      \
+ [10*][20*] [30*] [40*][50*]
+
+Ở đây:
+
+Root chỉ chứa key 20, 40 để điều hướng.
+Data thực sự chỉ nằm ở leaf.
+
+Muốn lấy record 20:
+
+Root
+ ↓
+Leaf
+ ↓
+Record
+
+Dù root có key 20 thì vẫn phải xuống leaf.
+
+Tại sao lại làm vậy?
+
+Lý do lớn nhất là internal node nhỏ hơn rất nhiều.
+
+Ví dụ:
+
+Một record dài 300 bytes.
+
+Nếu internal node cũng chứa record:
+
+[Key + Data]
+
+thì mỗi node chỉ chứa được khoảng vài chục key.
+
+Còn B+Tree:
+
+[Key + Pointer]
+
+pointer chỉ khoảng 8 bytes.
+
+=> Một page 8KB có thể chứa hàng trăm key.
+
+Kết quả:
+
+Cây thấp hơn.
+Ít lần đọc ổ đĩa hơn.
+Tìm kiếm nhanh hơn.
+Leaf của B+Tree còn được nối với nhau
+
+Ví dụ:
+
+          [20 | 40]
+         /    |    \
+        ↓      ↓      ↓
+
+[1..19] ⇄ [20..39] ⇄ [40..59]
+
+Các leaf tạo thành một linked list.
+
+Vì vậy nếu query:
+
+WHERE Id BETWEEN 20 AND 35
+
+DB sẽ:
+
+Đi từ root xuống leaf chứa 20.
+Sau đó chỉ việc đi sang các leaf kế tiếp.
+Không cần quay lại root.
+
+Đây gọi là range scan, rất nhanh.
+
+Còn B-Tree thì sao?
+
+Vì dữ liệu nằm rải rác ở cả internal node lẫn leaf nên:
+
+Không thể đơn giản nối tất cả record theo thứ tự.
+Việc duyệt một khoảng giá trị phải liên tục quay lên rồi xuống cây.
+Kém hiệu quả hơn cho các truy vấn dạng:
+ORDER BY
+BETWEEN
+>
+<
+>=
+<=
+
+----------------------------------------------------------------------------------
+
+Dữ liệu trong phần mô tả B-Tree/B+Tree không nhất thiết là toàn bộ record. Nó phụ thuộc vào loại index và DBMS.
+
+Có 2 trường hợp phổ biến:
+
+Trường hợp 1: Secondary Index (phổ biến)
+
+Giả sử bảng:
+
+Employee
+
+Id    Name    Salary
+1     Alice   1000
+2     Bob     1200
+3     Carol   1500
+
+Index trên Name có thể trông như:
+
+Alice -> RowId = 1
+Bob   -> RowId = 2
+Carol -> RowId = 3
+
+Ở đây "data" trong index chỉ là:
+
+Row ID
+Hoặc Primary Key
+Hoặc con trỏ tới record
+
+Chứ không phải cả record.
+
+Trường hợp 2: Clustered Index
+
+Trong SQL Server hoặc InnoDB, leaf node của clustered index chính là dữ liệu của bảng.
+
+Ví dụ:
+
+Leaf
+
+Id=1 Name=Alice Salary=1000
+Id=2 Name=Bob   Salary=1200
+...
+
+Không còn "pointer" tới record nữa vì leaf chính là record.ata" trong phần mô tả B-Tree/B+Tree không nhất thiết là toàn bộ record. Nó phụ thuộc vào loại index và DBMS.
+
+DBMS (Database Management System) là phần mềm quản lý cơ sở dữ liệu. Nó cung cấp các chức năng lưu trữ, truy xuất, cập nhật và bảo vệ dữ liệu, đồng thời xử lý các truy vấn SQL, quản lý transaction, concurrency, index và tối ưu việc truy cập dữ liệu.
