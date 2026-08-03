@@ -1,0 +1,23 @@
+Trong các dự án .NET em từng làm, em thường xuyên áp dụng một số Design Pattern sau:
+
+Repository & Unit of Work (Data Access Layer):
+
+Repository: Em dùng để trừu tượng hóa các thao tác truy vấn dữ liệu. Việc này giúp lớp Business Logic không cần quan tâm dữ liệu lấy từ SQL, NoSQL hay RAM, đồng thời rất dễ dàng Mock data để viết Unit Test.
+
+Unit of Work: Em kết hợp UoW chung với các Repository để quản lý Database Transaction. Khi một nghiệp vụ cần gọi 3-4 Repository khác nhau, UoW đảm bảo tất cả cùng nằm trong 1 Transaction — hoặc là Commit thành công toàn bộ, hoặc Rollback nếu có lỗi, tránh bị bất đồng bộ dữ liệu.
+
+Singleton Pattern:
+
+Em thường dùng qua IoC Container (AddSingleton) cho các Service mang tính chất dùng chung trạng thái (Shared Resource) hoặc tốn chi phí khởi tạo, ví dụ như các lớp Quản lý Cấu hình (AppSettings), Memory Cache, hoặc Log Manager.
+
+Factory Pattern / Dependency Injection (Nói thêm 1 pattern này để ăn điểm):
+
+Em dùng khi cần khởi tạo các đối tượng linh hoạt dựa trên tham số truyền vào (ví dụ: Hệ thống hỗ trợ nhiều cổng thanh toán VNPay, Momo, ZaloPay — tùy chọn người dùng gửi lên mà Factory sẽ tạo đúng Service tương ứng).
+
+---------------------------------------------------------------------------------
+
+Nếu nhà tuyển dụng hỏi xoáy thêm về EF Core: "EF Core đã có sẵn DbContext đóng vai trò là Unit of Work và các DbSet đóng vai trò là Repository rồi, tại sao em vẫn bọc (wrap) thêm một lớp Repository/UoW bên ngoài nữa?"
+
+Bạn có thể tự tin trả lời:
+
+"Dùng trực tiếp DbContext trong Controller/Service vẫn ổn với dự án nhỏ. Tuy nhiên em vẫn bọc thêm Repository/UoW khi dự án đòi hỏi viết Unit Test độc lập hoàn toàn với Database, hoặc khi em muốn ẩn bớt các hàm LINQ phức tạp khỏi lớp Business Logic để code gọn gàng, dễ bảo trì hơn."

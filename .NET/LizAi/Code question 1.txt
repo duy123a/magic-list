@@ -1,0 +1,85 @@
+public async Task ProcessOrder(List<Order> orders)
+{
+     orders.ForEach(async order =>
+    {
+        await order.ProcessOrder(); // đoạn code trên có vấn đề gì, code vậy đúng ko, vì sao ...
+    });
+}
+
+
+
+Đoạn code trên có 2 vấn đề nghiêm trọng về bất đồng bộ trong C#:
+
+Vấn đề async void: Hàm List.ForEach nhận vào một Action (trả về void). Việc truyền async vào đây sẽ tạo ra một async void lambda. Điều này khiến cho nếu có Exception xảy ra bên trong ProcessOrder(), chúng ta không thể catch được và có thể làm sập ứng dụng.
+
+Chạy Fire-and-Forget (Không chờ hoàn thành): Do ForEach không hỗ trợ await các Task, hàm cha ProcessOrder(List<Order>) sẽ trả về ngay lập tức trong khi các Order bên trong vẫn chưa xử lý xong.
+
+// Hàm ForEach của C# nhận vào một Action<T> (chỉ nhận hàm trả về VOID, không trả về TASK)
+public void ForEach(Action<T> action)
+{
+    foreach (T item in this)
+    {
+        action(item); // Gọi hàm action nhưng KHÔNG BẬT AWAIT
+    }
+}
+
+Cách khắc phục:
+
+Nếu muốn xử lý tuần tự: Thay orders.ForEach thành vòng lặp foreach chuẩn và await bên trong.
+
+Ví dụ:
+
+public async Task ProcessOrder(List<Order> orders)
+{
+    foreach (var order in orders)
+    {
+        // Chạy xong order 1 mới chuyển sang order 2
+        await order.ProcessOrder(); 
+    }
+}
+
+Nếu muốn xử lý song song: Gom danh sách các Task lại bằng LINQ và dùng await Task.WhenAll(...).
+
+Ví dụ:
+
+public async Task ProcessOrder(List<Order> orders)
+{
+    // 1. Khởi chạy tất cả các Task và gom vào danh sách (chưa await từng cái một)
+    var tasks = orders.Select(order => order.ProcessOrder());
+
+    // 2. Await để tất cả các Task chạy song song hoàn tất
+    await Task.WhenAll(tasks);
+}
+
+
+---------------------------------------------------------------------------------
+
+
+BỘ BA DELEGATE CÀI SẴN (BUILT-IN DELEGATES) TRONG C#
+
+ACTION
+
+Kiểu trả về: Không trả về gì cả (void)
+
+Mục đích sử dụng: Thực thi một hành động (in ấn, lưu DB, ghi log...)
+
+Ví dụ khai báo:
+Action print = s => Console.WriteLine(s);
+
+FUNC
+
+Kiểu trả về: BẮT BUỘC có trả về giá trị (Tham số cuối cùng khai báo chính là kiểu trả về)
+
+Mục đích sử dụng: Tính toán, biến đổi dữ liệu và trả về kết quả
+
+Ví dụ khai báo:
+Func<int, int, int> add = (a, b) => a + b;
+
+PREDICATE
+
+Kiểu trả về: LUÔN LUÔN trả về bool (và chỉ nhận vào đúng 1 tham số)
+
+Mục đích sử dụng: Kiểm tra điều kiện (Thỏa mãn hay không: true/false)
+
+Ví dụ khai báo:
+Predicate isEven = x => x % 2 == 0;

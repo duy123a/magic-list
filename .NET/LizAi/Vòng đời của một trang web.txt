@@ -1,0 +1,49 @@
+Vòng đời của một Web Request / Trang web trong ASP.NET Core
+
+Vòng đời của một request trong ASP.NET Core diễn ra qua các bước chính sau:
+
+1. Tiếp nhận Request (Web Server): Request từ trình duyệt gửi tới sẽ do Web Server (như Kestrel hoặc IIS) tiếp nhận đầu tiên.
+
+2. Đi qua Middleware Pipeline (Tuyến Middleware):
+
+- Request được chuyển qua một chuỗi các Middleware sắp xếp theo thứ tự (ví dụ: Logging -> Static Files -> Authentication -> Authorization -> Routing).
+
+- Tại đây, nếu request vi phạm (ví dụ: chưa đăng nhập), Middleware có thể ngắt luồng (short-circuit) và trả về lỗi ngay lập tức mà không đi tiếp vào trong.
+
+3. Routing (Định tuyến):
+
+- Sau khi qua các Middleware, hệ thống Routing sẽ đối chiếu URL và HTTP Method để tìm đúng Controller và Action Method tương ứng.
+
+4. Filter Pipeline & Model Binding:
+
+- Trước khi vào Controller, request đi qua các Filter (Action Filter, Resource Filter...).
+
+- Đồng thời, Model Binding sẽ tự động map dữ liệu từ URL, Query, Header hoặc Body thành các tham số/object trong C#.
+
+5. Thực thi Controller & Business Logic:
+
+- Controller nhận dữ liệu, gọi đến các Service/Repository (đã được inject qua DI) để xử lý logic và truy vấn Database.
+
+6. Trả về Response:
+
+- Action trả về kết quả (JSON, HTML, Status Code...).
+
+- Response này sẽ đi ngược lại qua chuỗi Middleware (để thực hiện các công việc như nén data, log response time...) rồi trả về cho Client.
+
+Đặc điểm mạnh nhất của ASP.NET Core là kiến trúc Middleware Pipeline dạng củ hành (Onion) rất linh hoạt, cho phép mình can thiệp vào bất kỳ giai đoạn nào của Request thông qua Middleware custom hoặc Filter.
+
+---------------------------------------------------------------------------------
+
+Pipeline (Đường ống) là mô hình xử lý dữ liệu theo dạng dây chuyền.
+
+Dữ liệu đầu vào sẽ đi qua một chuỗi các trạm/mắt xích (các bước xử lý) nối tiếp nhau. Kết quả đầu ra của bước trước sẽ là đầu vào của bước sau.
+
+---------------------------------------------------------------------------------
+
+Dạng Củ hành (Onion) chỉ cơ chế xử lý 2 chiều của Middleware Pipeline trong ASP.NET Core:
+
+Chiều đi vào (Inbound): Request đi từ lớp ngoài cùng vào trong lõi (Controller). Mỗi Middleware có thể xử lý/thay đổi Request hoặc ngắt luồng (short-circuit) nếu không đủ điều kiện.
+
+Chiều đi ra (Outbound): Sau khi Controller xử lý xong, Response sẽ quay ngược từ lõi đi qua các Middleware theo thứ tự đảo ngược để xử lý nốt (như nén dữ liệu, thêm Header, ghi Log time) trước khi gửi về cho Client.
+
+Điểm quan trọng nhất là thứ tự khai báo Middleware trong file Program.cs quyết định thứ tự chạy của chuỗi củ hành này.

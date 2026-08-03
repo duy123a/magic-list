@@ -1,0 +1,16 @@
+Phân biệt Value Type vs Reference Type, và giải thích Boxing/Unboxing?
+
+Về quản lý bộ nhớ:
+
+Value Type (int, bool, struct...) lưu giá trị trực tiếp và nằm trên bộ nhớ Stack.
+
+Reference Type (class, string, object...) lưu địa chỉ tham chiếu trên Stack, còn dữ liệu thực sự nằm trên Heap.
+
+Boxing & Unboxing là quá trình chuyển đổi qua lại giữa 2 kiểu này:
+
+Boxing: Là chuyển một Value Type thành Reference Type (object). Giá trị sẽ được copy từ Stack sang một object mới khởi tạo trên Heap.
+
+Unboxing: Là quá trình ngược lại, trích xuất giá trị Value Type từ object trên Heap về lại Stack (cần ép kiểu thủ công).
+
+Việc Boxing/Unboxing gây suy giảm hiệu năng vì tốn chi phí cấp phát Heap và tạo thêm việc cho Garbage Collector. Do đó trong .NET thực tế, em luôn ưu tiên dùng Generics để tránh Boxing.
+Ví dụ: Dùng List<int> thay vì ArrayList

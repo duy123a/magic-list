@@ -1,0 +1,34 @@
+==================================================
+TỔNG HỢP KIẾN THỨC DATABASE INDEX (SQL)
+==================================================
+
+1. KHÁI NIỆM INDEX:
+- Bản chất: Là cấu trúc dữ liệu (thường là B-Tree / B+Tree) giúp tăng tốc độ 
+  tìm kiếm dữ liệu (SELECT) mà không cần quét toàn bộ bảng (Full Table Scan).
+- Đánh đổi (Trade-off): Tăng tốc độ đọc (Read), nhưng làm CHẬM tốc độ ghi 
+  (INSERT, UPDATE, DELETE) và TỐN thêm dung lượng lưu trữ.
+
+--------------------------------------------------
+
+2. PHÂN LOẠI INDEX CHÍNH:
+
+A. CLUSTERED INDEX (Chỉ mục cụm):
+- Mỗi bảng CHỈ CÓ DUY NHẤT 1 Clustered Index (Mặc định là Primary Key).
+- Quyết định thứ tự lưu trữ VẬT LÝ của dữ liệu trên đĩa cứng.
+- Node lá (Leaf node) chứa toàn bộ dữ liệu thực tế của dòng đó.
+
+B. NON-CLUSTERED INDEX (Chỉ mục phi cụm):
+- Một bảng có thể tạo NHIỀU Non-Clustered Index.
+- Cấu trúc cây Index nằm tách biệt với dữ liệu thực tế.
+- Node lá chứa con trỏ (RowID hoặc Clustered Key) trỏ đến vị trí dữ liệu gốc.
+
+--------------------------------------------------
+
+3. COMPOSITE INDEX & THỨ TỰ KEY:
+- Composite Index: Index tạo trên từ 2 cột trở lên.
+- Thứ tự Key CỰC KỲ QUAN TRỌNG do tuân theo "Leftmost Prefix Rule" (Quy tắc tiền tố trái nhất).
+- Ví dụ Index (A, B, C):
+  + Chạy được Index khi Query có: (A), (A, B), (A, B, C).
+  + KHÔNG chạy được Index khi Query chỉ có: (B), (C), (B, C) vì thiếu tiền tố A.
+- Quy tắc thiết kế: Đặt cột có tính chọn lọc cao nhất (nhiều giá trị khác nhau nhất) lên ĐẦU TIÊN.
+==================================================

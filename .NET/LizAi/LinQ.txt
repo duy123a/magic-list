@@ -1,0 +1,23 @@
+LINQ (Language Integrated Query) trong C# cung cấp cú pháp nhất quán để truy vấn dữ liệu trong collection. Khi làm việc với Entity Framework Core, LINQ đóng vai trò biên dịch các đoạn code C# thành câu lệnh SQL tương ứng để chạy dưới Database.
+
+Cú pháp LINQ có 2 dạng chính:
+
+Method Syntax: Sử dụng các Extension Method kết hợp Lambda Expression (.Where(), .Select()). Đây là cách được sử dụng phổ biến nhất trong thực tế.
+
+Ví dụ: 
+
+var result = _context.Users
+                     .Where(u => u.Age > 18)
+                     .OrderBy(u => u.Name)
+                     .ToList();
+
+Query Syntax: Có cú pháp khai báo gần giống SQL (from x in db where ... select x).
+
+Ví dụ:
+
+var result = (from u in _context.Users
+              where u.Age > 18
+              orderby u.Name
+              select u).ToList();
+
+Điểm quan trọng khi dùng LINQ với EF Core: LINQ hoạt động theo cơ chế Deferred Execution (Thực thi trì hoãn) dưới dạng IQueryable. Query chỉ thực sự gửi xuống DB khi gọi các hàm như .ToList(), .FirstOrDefault(), hoặc chạy foreach.

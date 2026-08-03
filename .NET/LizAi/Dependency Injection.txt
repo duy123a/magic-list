@@ -1,0 +1,61 @@
+Dependency Injection (DI) là một Design Pattern giúp triển khai nguyên lý Inversion of Control (IoC), nhằm giảm bớt sự phụ thuộc trực tiếp (loose coupling) giữa các class.
+
+(DI là một cách cài đặt của IoC. Nôm na là IoC đảo ngược quyền kiểm soát: Thay vì class tự quyết định tự new đối tượng, quyền đó được giao lại cho Framework/Container quản lý.)
+
+Thay vì một class tự khởi tạo các đối tượng phụ thuộc (dependencies) bằng từ khóa new, các đối tượng này sẽ được tiêm (inject) từ bên ngoài vào — thường là thông qua Constructor và dựa trên Interface.
+
+Trong .NET, hệ thống có sẵn Built-in IoC Container hỗ trợ quản lý vòng đời (Lifetimes) của các dependency rất dễ dàng.
+
+---------------------------------------------------------------------------------
+
+3 Service Lifetimes trong .NET IoC Container:
+
+Transient: Tạo một instance mới hoàn toàn mỗi khi được yêu cầu (AddTransient).
+
+Scoped: Tạo một instance duy nhất trong một luồng request HTTP (AddScoped).
+
+Singleton: Tạo duy nhất một instance cho toàn bộ vòng đời ứng dụng (AddSingleton).
+
+---------------------------------------------------------------------------------
+
+
+Nếu nhà tuyển dụng bảo: "Giải thích rõ hơn chỗ Scoped: 'Tạo một instance duy nhất trong một luồng request HTTP' nghĩa là sao?"
+
+Bạn có thể lấy đúng ví dụ của bạn và trả lời như sau:
+
+"Giả sử em có Endpoint A, trong luồng xử lý của Endpoint A này, em injection Service B vào 2 vị trí khác nhau (ví dụ: ở Controller và ở một Repository nào đó):
+
+Nếu Service B đăng ký dạng Transient: Khi Controller gọi và Repository gọi, IoC Container sẽ new ra 2 instance độc lập khác nhau của Service B.
+
+Nếu Service B đăng ký dạng Scoped: Trong cùng lượt request HTTP đó, dù gọi ở Controller hay Repository, IoC Container chỉ new 1 instance duy nhất của Service B và dùng chung cho cả request. Khi request kết thúc (trả về Response cho client), instance này sẽ bị tiêu hủy.
+
+(Mở rộng thêm): Nếu có một người dùng khác gửi request tiếp theo tới Endpoint A, hệ thống sẽ tạo một Scope mới và một instance Service B mới cho request đó."
+
+---------------------------------------------------------------------------------
+
+Thế singleton và static class khác nhau chỗ nào, tại sao ko dùng static class thay cho singeton?
+
+Về bản chất, Static class là một tập hợp các hàm tĩnh và không có đối tượng (instance), còn Singleton vẫn là một class bình thường nhưng được thiết kế để chỉ có duy nhất 1 instance trong suốt ứng dụng.
+
+Chúng ta không nên dùng Static class thay thế hoàn toàn cho Singleton vì 3 lý do lớn:
+
+- Khả năng Mở rộng & OOP: Singleton có thể implement Interface và kế thừa, còn Static class thì không.
+
+- Dependency Injection (DI): Trong .NET, Singleton dễ dàng đăng ký vào IoC Container để inject vào các service khác. Static class không thể inject qua Constructor, gây ra sự phụ thuộc cứng (tight coupling).
+
+- Unit Test: Nhờ implement được Interface và dùng qua DI, Singleton rất dễ dàng Mock khi viết Unit Test. Trong khi đó, Code sử dụng Static class cực kỳ khó viết Test.
+
+Static class thường chỉ phù hợp cho các Utility / Helper classes không lưu trạng thái (stateless), ví dụ như Math.Abs(), Convert.ToInt32(), hoặc các Extension Methods.
+
+---------------------------------------------------------------------------------
+
+Bản chất của Stateless:
+
+Hàm/Class không giữ lại bất kỳ dữ liệu (biến/trạng thái) nào giữa các lần gọi khác nhau.
+
+Nó chỉ nhận dữ liệu vào (Input), xử lý rồi trả ra kết quả (Output).
+
+Do không lưu lại thông tin của lần gọi trước, nên cùng 1 Input chắc chắn luôn ra 1 Output duy nhất (tương tự như khái niệm Pure Function trong lập trình).
+
+
+

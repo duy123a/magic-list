@@ -1,0 +1,24 @@
+==================================================
+QUẢN LÝ EXCEPTION TRONG ASP.NET CORE (EXCEPTION HANDLING)
+==================================================
+
+1. VỊ TRÍ CHUẨN NHẤT: MIDDLEWARE (Global Exception Handling)
+- Lý do: Catch tập trung toàn bộ lỗi trong ứng dụng tại 1 nơi duy nhất.
+- Lợi ích: 
+  + Code gọn gàng, tránh lặp lại try-catch ở khắp nơi.
+  + Chuẩn hóa định dạng Response trả về cho Client (400, 401, 404, 500).
+  + Che giấu các thông tin nhạy cảm (Stacktrace, DB Connection) ở môi trường Prod.
+
+--------------------------------------------------
+
+2. KHI NÀO MỚI DÙNG TRY-CATCH Ở SERVICE/CONTROLLER?
+- Khi cần xử lý LOGIC RIÊNG cho lỗi đó (ví dụ: Retry kết nối, Rollback Transaction).
+- Khi muốn catch lỗi thấp cấp và throw lại một Custom Exception 
+  (ví dụ: Catch lỗi DB -> throw new NotFoundException("Không tìm thấy User")).
+
+--------------------------------------------------
+
+3. CÁC CÁCH TRIỂN KHAI TRONG ASP.NET CORE:
+- Cách 1: Viết Custom Exception Middleware (dùng app.UseMiddleware<GlobalExceptionMiddleware>()).
+- Cách 2: Dùng IExceptionHandler (Tính năng mới cực hay từ .NET 8 trở đi).
+==================================================

@@ -1,0 +1,19 @@
+1. Mục đích:
+Async/Await được dùng chủ yếu cho các tác vụ I/O-bound (như gọi Database, gọi HTTP API, đọc/ghi File) để không làm tắc nghẽn Thread (Non-blocking I/O). Phía Web Server nó giúp hệ thống tăng khả năng chịu tải (Scalability), phía Client nó giúp giao diện không bị treo.
+
+(I/O-bound (Input/Output Bound) là thuật ngữ chỉ các tác vụ mà tốc độ hoàn thành của nó bị giới hạn bởi tốc độ của các thiết bị Đầu vào/Đầu ra (I/O), chứ không phải do tốc độ tính toán của CPU.)
+
+Bản chất của từ khóa:
+
+async: Đánh dấu cho C# Compiler biết phương thức này chứa xử lý bất đồng bộ và sẽ biên dịch nó thành một State Machine.
+
+await: Đánh dấu điểm tạm dừng. Khi gặp await, Thread hiện tại sẽ được giải phóng quay về Thread Pool để phục vụ công việc khác chứ không ngồi chờ.
+
+Cách hoạt động:
+Khi tác vụ I/O hoàn tất, hệ điều hành gửi tín hiệu thông báo, Thread Pool sẽ lấy một Thread đang rảnh để tiếp tục thực thi phần code nằm phía sau từ khóa await.
+
+---------------------------------------------------------------------------------
+
+Tác vụ CPU-bound (như tính toán thuật toán nặng, xử lý ảnh) có nên dùng async/await không?"
+
+Bạn trả lời: "Không nên lạm dụng async/await thuần túy cho CPU-bound trên Web Server, vì CPU vẫn phải chạy liên tục để tính toán chứ không có thời gian nhàn rỗi I/O để giải phóng Thread. Muốn đẩy tác vụ CPU-bound sang luồng khác thì người ta dùng Task.Run().

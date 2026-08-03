@@ -1,0 +1,34 @@
+==================================================
+PHÂN BIỆT IENUMERABLE VÀ IQUERYABLE TRONG C# / EF CORE
+==================================================
+
+1. IENUMERABLE:
+- Môi trường: Dùng cho dữ liệu IN-MEMORY (RAM) như List, Array.
+- Cơ chế LINQ: Dùng Func<> Delegate.
+- Cách xử lý: Lọc dữ liệu trên RAM của Client (Client-side Evaluation).
+- Điểm yếu: Nếu lấy từ DB, nó sẽ kéo TOÀN BỘ dữ liệu về RAM rồi mới lọc 
+  -> Tốn bộ nhớ và rất chậm nếu dữ liệu lớn.
+
+--------------------------------------------------
+
+2. IQUERYABLE:
+- Môi trường: Dùng cho dữ liệu OUT-OF-MEMORY (Database thông qua EF Core/LINQ to SQL).
+- Cơ chế LINQ: Dùng Expression Tree (Cây biểu thức).
+- Cách xử lý: Tích lũy điều kiện và DỊCH THÀNH CÂU LỆNH SQL để chạy dưới Database 
+  (Server-side Evaluation).
+- Điểm mạnh: Database chỉ trả về ĐÚNG dữ liệu cần thiết -> Tối ưu hiệu năng vượt trội.
+
+==================================================
+KHI NÀO DÙNG CÁI NÀO? (BEST PRACTICES)
+==================================================
+
+- DÙNG IQUERYABLE KHI:
+  + Truy vấn dữ liệu từ Database (DbContext.Users.Where(...)).
+  + Cần Phân trang (Paging), Sắp xếp (Sorting), Lọc (Filtering) trực tiếp dưới DB 
+    trước khi lấy dữ liệu lên.
+
+- DÙNG IENUMERABLE KHI:
+  + Dữ liệu đã nằm sẵn trong bộ nhớ RAM (List<T>, Array).
+  + Đã gọi .ToList() hoặc .AsEnumerable() từ DB về.
+  + Cần thực thi các hàm C# phức tạp mà SQL không hỗ trợ (Custom C# Methods).
+==================================================

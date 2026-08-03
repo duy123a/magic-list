@@ -1,0 +1,77 @@
+- dependency injection là gì, vòng đời trang web thế nào, pipeline (về thiết kế design patten)
+- thiết kế jwt, bạn hiểu thế nào về jwt, API ........... (có mấy thành phần, và từng chức năng)
+- kiến trúc lập trình phân tán: sử dụng microservice ......, kafka, rabbitmq, redis, cách làm việc của từng công cụ
+- khái niệm boxing và unboxing, value type, reference type
+- linq, làm việc với entity framework, syntax
+async await, tại sao phải cần lập trình với async await..... hiểu cách hoạt động
+
+- oop hỏi lý thuyết, nêu sơ bộ 4 tính chất và đố code
+class bird
+{
+    public virtual void greeting()
+    {
+        Console.WriteLine("hi bird");
+    }
+}
+class peguin : bird
+{
+    // Dùng new để che giấu phương thức của lớp Cha
+    public new void greeting()
+    {
+        Console.WriteLine("hi peguin");
+    }
+}
+Cha chaCon = new Con(); thì điều gì xảy ra có bị ghi đè ko....
+
+class bird
+{
+    public abstract void greeting()
+}
+class peguin : bird
+{
+    // Dùng new để che giấu phương thức của lớp Cha
+    public new void greeting()
+    {
+        Console.WriteLine("hi peguin");
+    }
+}
+điều gì xảy ra với đoạn code trên
+
+- đố về DB
+SELECT *
+FROM Orders
+WHERE YEAR(CreatedDate) = 2026;  query này có nên viết ko vì sao....
+-index trong sql, có mấy loại index, cách sử dụng...... tại sao đánh index vào sql lại query nhanh hơn, nhưng insert update lại lâu
+- IEnumerable và IQueryable  khác nhau và khi nào sử dụng cái nào...
+
+- Trong ASP.NET:
+👉 Bạn nên handle exception ở đâu?
+
+Controller?
+Service?
+Middleware?
+
+- đố code 
+public async Task ProcessOrder(List<Order> orders)
+{
+     orders.ForEach(async order =>
+    {
+        await order.ProcessOrder(); // đoạn code trên có vấn đề gì, code vậy đúng ko, vì sao ...
+    });
+}
+
+
+làm 1 bài list code ngẫu nhiên trước, thường rất dễ, nhưng phải xử lý tốt ví dụ bài twosum, hỏi độ phức tạp bao nhiều....
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+cái trên là lizai còn cái dưới là ôn tổng quan về C#, học thêm để deal lương cao
+hôm trước em học về cái này, cũng có hỏi lại nhìu ấy
+
+https://www.linkedin.com/pulse/thi-chuy%C3%AAn-m%C3%B4n-khi-%E1%BB%A9ng-truy%E1%BB%83n-v%E1%BB%8B-tr%C3%AD-net-developer-t%E1%BA%A1i-tran-cao-hai-fygzc/
+
+
+
+

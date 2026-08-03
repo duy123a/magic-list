@@ -1,0 +1,41 @@
+==================================================
+4 TÍNH CHẤT CỐT LÕI CỦA OOP (C# / .NET)
+==================================================
+
+1. TÍNH ĐÓNG GÓI (ENCAPSULATION)
+- Khái niệm: Gom nhóm dữ liệu và phương thức vào trong 1 class, 
+  đồng thời che giấu thông tin chi tiết bên trong.
+- Thực thi trong C#: Sử dụng các Access Modifiers (private, protected, public, internal).
+- Mục đích: Bảo vệ dữ liệu, tránh bị truy cập/sửa đổi sai cách từ bên ngoài.
+
+--------------------------------------------------
+
+2. TÍNH KẾ THỪA (INHERITANCE)
+- Khái niệm: Cho phép class con sở hữu lại các thuộc tính và phương thức của class cha.
+- Thực thi trong C#: Dùng dấu hai chấm (class Con : Cha).
+- Mẹo phỏng vấn: C# chỉ cho phép đơn kế thừa với Class (1 class cha), 
+  nhưng cho phép implement nhiều Interface.
+
+--------------------------------------------------
+
+3. TÍNH ĐA HÌNH (POLYMORPHISM)
+- Khái niệm: Cùng một hành động (tên hàm) nhưng các đối tượng khác nhau 
+  sẽ thực thi theo các cách khác nhau.
+- Phân loại trong C#:
+  + Compile-time (Lúc biên dịch): Method Overloading (Nạp chồng hàm - cùng tên, khác tham số).
+  + Runtime (Lúc thực thi): Method Overriding (Ghi đè hàm - dùng virtual/abstract và override).
+
+--------------------------------------------------
+==================================================
+
+4. TÍNH TRỪU TƯỢNG (ABSTRACTION)
+- Khái niệm: Chỉ tập trung trình bày các tính năng cốt lõi của đối tượng (Nó làm gì)
+  mà ẩn đi chi tiết cài đặt phức tạp bên trong (Nó làm thế nào).
+- Thực thi trong C#: Dùng Interface hoặc Abstract Class.
+
+--------------------------------------------------
+==================================================
+
+Abstract Class trả lời cho câu hỏi: Đối tượng này LÀ CÁI GÌ? (Nó định nghĩa danh tính, dùng để tái sử dụng code).
+
+Interface trả lời cho câu hỏi: Đối tượng này CÓ THỂ LÀM ĐƯỢC GÌ? (Nó định nghĩa năng lực/hợp đồng, dùng để giảm phụ thuộc trong DI)."
