@@ -63,14 +63,39 @@ public async Task ProcessOrder(List<Order> orders)
 
 làm 1 bài list code ngẫu nhiên trước, thường rất dễ, nhưng phải xử lý tốt ví dụ bài twosum, hỏi độ phức tạp bao nhiều....
 
-
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+À còn 1 câu nữa về transaction nha, nếu a duy gth là làm thương mai điện tử
+
+Định nghĩa bottle neck. Ví dụ trong hệ thống nhiều transaction thì sao
+
+Có chạy song song đc ko
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 cái trên là lizai còn cái dưới là ôn tổng quan về C#, học thêm để deal lương cao
 hôm trước em học về cái này, cũng có hỏi lại nhìu ấy
 
 https://www.linkedin.com/pulse/thi-chuy%C3%AAn-m%C3%B4n-khi-%E1%BB%A9ng-truy%E1%BB%83n-v%E1%BB%8B-tr%C3%AD-net-developer-t%E1%BA%A1i-tran-cao-hai-fygzc/
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Tìm hiểu David R. Elmaleh, triệu phú ng mĩ
+
+Sáng lập ra lizai đó
+
+David R. Elmaleh không phải là một founder startup AI thông thường, mà xuất thân là nhà khoa học y sinh (biomedical scientist), nhà phát minh và doanh nhân biotech.
+
+à mà, chẳng hạn, vô pv thì a Duy cứ nói, e ở nhà có tìm hiểu về nghiệp vụ ở cty mình phát triển, và xem video demo, e thấy khá hay kkkk, https://uplizd.ai/ sản phẩm của công ty đây
+
+nó giống như là n8n, ứng dụng build các component liên kết với nhau, thành 1 hệ thống AI
+dùng đầu vào input các các agent phân phối việc, gọi openai phân tích,..... rồi qua 1 thực thể nào đó , anh Duy cứ lên mạng coi n8n là hiểu nó trang web này nó vẫn hành, cũng giống giống n8n ý
+
+
+Uplizd - một AI Agent Platform. Theo em hiểu thì đây là nền tảng cho phép xây dựng và triển khai các AI agent, kết nối nhiều mô hình AI và các hệ thống bên ngoài để tự động hóa workflow cho doanh nghiệp. Hướng đến production và enterprise.
+Ngoài ra lizAI còn tham gia vào lĩnh vực healthcare (Healthcare Data Management, Precision Health, drug development, AI hỗ trợ bác sĩ)
+
 
 
 
