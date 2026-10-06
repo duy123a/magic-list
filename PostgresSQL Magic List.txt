@@ -1,0 +1,29 @@
+docker run -d --name postgres-restia --restart unless-stopped -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=7551656as -e POSTGRES_DB=restia -p 5432:5432 -v postgres_data:/var/lib/postgresql postgres:18
+
+
+----------------------------------------------------------------
+
+docker-compose.yml
+
+services:
+  postgres:
+    image: postgres:18
+    container_name: postgres-restia
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 7551656as
+      POSTGRES_DB: restia
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+volumes:
+  postgres_data:
+
+
+----------------------------------------------------------------
+
+
+"DefaultConnection": "Host=localhost;Port=5432;Database=restia;Username=postgres;Password=7551656as"

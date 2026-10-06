@@ -1,0 +1,26 @@
+docker run -d --name oracle-free -p 1521:1521 -e ORACLE_PWD="Oracle123!" -v OracleDBData:/opt/oracle/oradata container-registry.oracle.com/database/free:latest-lite
+
+Default user name is system, we can create another one if needed
+
+Username: SYSTEM
+Password: Oracle123!
+Host:     localhost
+Port:     1521
+Service:  FREEPDB1
+
+jdbc:oracle:thin:@//localhost:1521/FREEPDB1
+
+
+---------------------------------------------------------------
+
+docker exec -it oracle-free sqlplus 'system/Oracle123!@FREEPDB1'
+
+CREATE USER ifs_lab IDENTIFIED BY IFS_Lab123;
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW, CREATE SEQUENCE, CREATE PROCEDURE, CREATE TRIGGER TO ifs_lab;
+
+Driver:   Oracle Thin
+Host:     localhost
+Port:     1521
+Service:  FREEPDB1
+Username: ifs_lab
+Password: IFS_Lab123
