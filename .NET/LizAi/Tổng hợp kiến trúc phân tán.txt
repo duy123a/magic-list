@@ -1,0 +1,30 @@
+==================================================
+TỔNG HỢP KIẾN TRÚC PHÂN TÁN (MICROSERVICES ARCHITECTURE)
+==================================================
+
+1. MICROSERVICES:
+- Chia ứng dụng lớn thành nhiều dịch vụ nhỏ, độc lập.
+- Mỗi service tự quản lý Database riêng (Database per Service).
+- Dễ dàng mở rộng (Scale) từng phần và không bị sập toàn bộ hệ thống khi 1 service lỗi.
+
+--------------------------------------------------
+
+2. REDIS (In-Memory Data Store):
+- Lưu trữ dữ liệu dạng Key-Value chạy trực tiếp trên RAM -> Tốc độ cực nhanh.
+- Công dụng: Caching (Bộ nhớ đệm), Distributed Lock (Pessimistic Lock cho Flash Sale), 
+  Quản lý Session/Token tập trung, Rate Limiting.
+
+--------------------------------------------------
+
+3. RABBITMQ (Smart Message Broker):
+- Là "bưu điện" trung gian truyền tin bất đồng bộ giữa các service (Decoupling).
+- Cơ chế: Service C gửi tin -> RabbitMQ xếp tin vào đúng Hàng chờ (Queue) -> Service A,B tự lấy về xử lý -> XÓA MESSAGE.
+- Phù hợp: Giao tiếp nghiệp vụ đáng tin cậy (Ví dụ: Đặt hàng thành công -> Trừ tiền -> Gửi Email).
+
+--------------------------------------------------
+
+4. KAFKA (Event Streaming / Distributed Log):
+- Là "cuốn nhật ký phân tán" xử lý dòng dữ liệu cực lớn (High Throughput).
+- Cơ chế: Lưu data dưới dạng Log theo thời gian -> KHÔNG XÓA MESSAGE sau khi đọc.
+- Phù hợp: Big Data, Real-time Analytics, Tracking hành vi người dùng, Log hệ thống.
+==================================================

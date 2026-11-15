@@ -1,0 +1,54 @@
+==================================================
+TRẢ LỜI CHUẨN PHỎNG VẤN: BOTTLENECK & TRANSACTION
+==================================================
+
+1. BOTTLENECK LÀ GÌ?
+- Là điểm nghẽn giới hạn hiệu năng của toàn bộ hệ thống (Thường xảy ra nhất ở Database 
+  do nghẽn Connection Pool, I/O đĩa, CPU hoặc Row Locking).
+
+--------------------------------------------------
+
+2. TRANSACTION CÓ CHẠY SONG SONG ĐƯỢC KHÔNG?
+- NẾU KHÁC RECORD: Có! Database Engine phân luồng cho chạy SONG SONG 100%.
+- NẾU CÙNG 1 RECORD: KHÔNG! Database bắt buộc phải chuyển sang CHẠY TUẦN TỰ (Xếp hàng chờ) 
+  để tránh xung đột dữ liệu (Lost Update / Race Condition).
+
+--------------------------------------------------
+
+3. GIẢI PHÁP XỬ LÝ XUNG ĐỘT KHI CÙNG 1 RECORD (CONCURRENCY CONTROL):
+
+- Tỷ lệ xung đột THẤP (ít người sửa cùng lúc): 
+  -> Dùng Optimistic Lock (RowVersion / Timestamp).
+  
+- Tỷ lệ xung đột CỰC CAO (Flash Sale, Đặt vé - Hàng ngàn Request/giây): 
+  -> Dùng Pessimistic Lock / Redis Distributed Lock trên RAM để chặn bớt Request 
+     trước khi đập vào DB, tránh làm sập DB.
+==================================================
+
+
+==================================================
+ĐỊNH NGHĨA TRANSACTION TRONG DATABASE
+==================================================
+
+1. TRANSACTION LÀ GÌ?
+- KHÔNG PHẢI là kết nối (Connection).
+- Là TẬP HỢP CÁC THAO TÁC SQL được thực thi như MỘT ĐƠN VỊ CÔNG VIỆC DUY NHẤT 
+  (Single Unit of Work).
+- Nguyên tắc: "Tất cả hoặc Không có gì" (All or Nothing). 
+  Nếu 1 lệnh lỗi -> ROLLBACK toàn bộ. Nếu thành công -> COMMIT.
+
+--------------------------------------------------
+
+2. TÍNH CHẤT A.C.I.D CỦA TRANSACTION:
+- Atomicity (Tính nguyên tử): Tất cả lệnh cùng thành công hoặc cùng thất bại.
+- Consistency (Tính nhất quán): Dữ liệu luôn đúng ràng buộc trước và sau transaction.
+- Isolation (Tính tách biệt): Các Transaction song song không can thiệp lẫn nhau.
+- Durability (Tính bền vững): Dữ liệu sau khi Commit sẽ được lưu vĩnh viễn.
+
+--------------------------------------------------
+
+3. PHÂN BIỆT CONNECTION VS TRANSACTION:
+- Connection: Là "đường ống kết nối" mở ra giữa App và Database.
+- Transaction: Là "logic nghiệp vụ" chạy bên trong đường ống kết nối đó. 
+  (Một Connection có thể thực thi nhiều Transaction nối tiếp nhau).
+==================================================

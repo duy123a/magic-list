@@ -22,3 +22,11 @@ protontricks 489830 winecfg
 
 Tắt force hdr
 DXVK_HDR=0 %command%
+
+
+Cái library cần cài để chạy đc skyrim
+
+.net 10
+c++ library
+d3dcompiler_47 (community shader)
+xac audio

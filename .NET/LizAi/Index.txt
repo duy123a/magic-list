@@ -32,3 +32,33 @@ B. NON-CLUSTERED INDEX (Chỉ mục phi cụm):
   + KHÔNG chạy được Index khi Query chỉ có: (B), (C), (B, C) vì thiếu tiền tố A.
 - Quy tắc thiết kế: Đặt cột có tính chọn lọc cao nhất (nhiều giá trị khác nhau nhất) lên ĐẦU TIÊN.
 ==================================================
+
+
+==================================================
+TẠI SAO INDEX TĂNG TỐC READ NHƯNG LÀM CHẬM WRITE?
+==================================================
+
+1. TẠI SAO QUERY (SELECT) NHANH HƠN?
+- Sử dụng cấu trúc dữ liệu B-Tree/B+Tree.
+- Độ phức tạp giảm từ O(N) (Table Scan) xuống O(log N) (Index Seek).
+- Ví dụ: Bảng 1 triệu dòng, không có Index phải duyệt 1 triệu dòng, 
+  có Index chỉ tốn khoảng 20 bước nhảy trên cây B-Tree.
+
+--------------------------------------------------
+
+2. TẠI SAO INSERT, UPDATE, DELETE LẠI CHẬM HƠN?
+- INSERT: Phải vừa ghi dữ liệu gốc, vừa chèn node mới vào ĐÚNG VỊ TRÍ 
+  trên cây B-Tree. Nếu trang đĩa đầy, phải tốn chi phí TÁCH TRANG (Page Split).
+- UPDATE: Nếu sửa đúng cột được đánh Index, Database phải XÓA node vị trí cũ 
+  và CHÈN node vào vị trí mới trên cây B-Tree (Tương đương Delete + Insert).
+- DELETE: Phải vừa xóa dữ liệu, vừa tìm và xóa node trên cây B-Tree rồi cân bằng lại cây.
+
+--------------------------------------------------
+
+3. RÚT RA KINH NGHIỆM THIẾT KẾ (BEST PRACTICE):
+- Không đánh Index "bừa bãi" trên quá nhiều cột.
+- Với các bảng Write-heavy (ghi dữ liệu liên tục như Log, History, Audit Trail), 
+  nên HẠN CHẾ tối đa việc đánh Non-Clustered Index.
+- Với các bảng Read-heavy (ít sửa nhưng query nhiều như Product, User), 
+  nên đánh Index trên các cột hay nằm trong mệnh đề WHERE, JOIN, ORDER BY.
+==================================================

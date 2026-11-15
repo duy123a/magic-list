@@ -1,0 +1,59 @@
+==================================================
+BÀI TOÁN TWO SUM (C# & ALGORITHM INTERVIEW)
+==================================================
+
+1. TƯ TƯỞNG TỐI ƯU:
+- Thay vì dùng 2 vòng lặp for lồng nhau O(N^2), ta dùng Dictionary (Hash Table).
+- Khi duyệt qua số X, ta tính số còn thiếu: Complement = Target - X.
+- Lên Dictionary tìm xem Complement đã xuất hiện trước đó chưa. 
+  + Nếu có: Trả về [Index của Complement, Index của X].
+  + Nếu chưa: Lưu X và Index của X vào Dictionary rồi duyệt tiếp.
+
+--------------------------------------------------
+
+2. ĐỘ PHỨC TẠP (COMPLEXITY ANALYSIS):
+
+A. TIME COMPLEXITY: O(N)
+- Duyệt qua mảng N phần tử đúng 1 lần.
+- Thao tác ContainsKey và Add trên Dictionary chỉ tốn O(1).
+- Tổng thời gian là O(N).
+
+B. SPACE COMPLEXITY: O(N)
+- Trường hợp xấu nhất phải lưu tối đa N phần tử vào Dictionary.
+
+--------------------------------------------------
+
+3. MẸO PHỎNG VẤN (CÁC CÂU HỎI MỞ RỘNG):
+- "Nếu mảng ĐÃ ĐƯỢC SẮP XẾP thì làm thế nào?"
+  -> Trả lời: Dùng kỹ thuật 2 con trỏ (Two Pointers) từ 2 đầu thu hẹp lại. 
+     Lúc này Time = O(N), nhưng Space = O(1) (không tốn Dictionary).
+==================================================
+
+
+public class Solution 
+{
+    public int[] TwoSum(int[] nums, int target) 
+    {
+        // Dictionary dùng để lưu: Key = Giá trị của phần tử, Value = Chỉ số (Index) của phần tử đó
+        var map = new Dictionary<int, int>();
+
+        for (int i = 0; i < nums.Length; i++) 
+        {
+            int complement = target - nums[i]; // Số còn thiếu để tạo thành target
+
+            // Nếu số còn thiếu đã tồn tại trong Dictionary -> Đã tìm thấy cặp đáp án!
+            if (map.ContainsKey(complement)) 
+            {
+                return new int[] { map[complement], i };
+            }
+
+            // Nếu chưa thấy, lưu số hiện tại và index của nó vào Dictionary (nếu chưa có key đó)
+            if (!map.ContainsKey(nums[i]))
+            {
+                map.Add(nums[i], i);
+            }
+        }
+
+        return new int[0]; // Trả về mảng rỗng nếu không tìm thấy
+    }
+}

@@ -1,0 +1,31 @@
+==================================================
+TỔNG HỢP NGUYÊN LÝ S.O.L.I.D TRONG C#
+==================================================
+
+1. S - Single Responsibility Principle (Đơn trách nhiệm)
+   - Một Class chỉ nên có DUY NHẤT MỘT lý do để thay đổi (Chỉ làm 1 việc chính).
+   - Ví dụ: Class UserServices chỉ xử lý User, không ôm thêm việc gửi Email hay gõ Log.
+
+2. O - Open/Closed Principle (Đóng / Mở)
+   - MỞ cho việc mở rộng, ĐÓNG cho việc chỉnh sửa code cũ.
+   - Khi thêm tính năng mới: Mở rộng class/interface thay vì sửa code đang chạy ổn định.
+
+3. L - Liskov Substitution Principle (Thay thế Liskov)
+   - Class con phải có thể THAY THẾ hoàn toàn cho Class cha mà không làm hỏng chương trình.
+   - Nếu Class Con override method của Class Cha mà lại throw NotImplementedException -> Vi phạm Liskov.
+
+4. I - Interface Segregation Principle (Phân tách Interface)
+   - THAY VÌ dùng 1 Interface BỰ chứa quá nhiều method, hãy CHIA NHỎ thành nhiều Interface chuyên biệt.
+   - Tránh việc Class con phải implement những method mà nó không bao giờ dùng tới.
+
+5. D - Dependency Inversion Principle (Đảo ngược phụ thuộc)
+   - Các module cấp cao và cấp thấp KHÔNG nên phụ thuộc trực tiếp vào nhau, mà phải PHỤ THUỘC VÀO ABSTRACTION (Interface).
+   - Giúp giảm độ gắn kết (Loose Coupling), dễ dàng Mock Data để Unit Test.
+
+==================================================
+PHÂN BIỆT DIP vs DI vs IoC Container
+==================================================
+- DIP (Dependency Inversion Principle): Là NGUYÊN LÝ/TƯ TƯỞNG thiết kế.
+- DI (Dependency Injection): Là KỸ THUẬT/PATTERN thực thi (Inject qua Constructor).
+- IoC Container (như Microsoft.Extensions.DependencyInjection): Là BỘ CÔNG CỤ quản lý vòng đời (Lifetime) của các Dependency đó.
+==================================================

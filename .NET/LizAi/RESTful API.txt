@@ -1,0 +1,39 @@
+==================================================
+KHÁI NIỆM & CHUẨN THIẾT KẾ RESTFUL API
+==================================================
+
+1. KHÁI NIỆM:
+- REST (Representational State Transfer) KHÔNG PHẢI LÀ GIAO THỨC, 
+  mà là một KIỂU KIẾN TRÚC THIẾT KẾ API dựa trên nền tảng HTTP.
+- API tuân thủ đúng các quy tắc của REST gọi là RESTful API.
+
+--------------------------------------------------
+
+2. CÁC HTTP METHOD CHUẨN RESTFUL:
+- GET: Lấy dữ liệu (Read-only, không làm thay đổi dữ liệu Server).
+- POST: Tạo mới một tài nguyên (Create).
+- PUT: Cập nhật TOÀN BỘ tài nguyên (Replace).
+- PATCH: Cập nhật MỘT PHẦN tài nguyên (Partial Update).
+- DELETE: Xóa tài nguyên.
+
+--------------------------------------------------
+
+3. NGUYÊN TẮC THIẾT KẾ CHUẨN RESTFUL (BEST PRACTICES):
+
+A. TÊN ENDPOINT DÙNG DANH TỪ SỐ NHIỀU (Không dùng động từ):
+   - Đúng: GET /api/v1/users, DELETE /api/v1/users/5
+   - Sai: GET /api/v1/getUsers, POST /api/v1/deleteUser
+
+B. STATELESS (Không lưu trạng thái):
+   - Server không lưu Session của Client. Mỗi request phải tự mang theo 
+     đầy đủ thông tin (như Bearer JWT Token).
+
+C. TRẢ VỀ ĐÚNG HTTP STATUS CODE:
+   - 200 OK: Thành công.
+   - 201 Created: Tạo mới thành công.
+   - 400 Bad Request: Dữ liệu Client gửi lên sai định dạng.
+   - 401 Unauthorized: Chưa xác thực (Chưa đăng nhập/Token sai).
+   - 403 Forbidden: Không có quyền truy cập.
+   - 404 Not Found: Không tìm thấy tài nguyên.
+   - 500 Internal Server Error: Lỗi hệ thống/Server.
+==================================================

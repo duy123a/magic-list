@@ -1,0 +1,3 @@
+thứ tự chạy câu lệnh query là
+
+FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → OFFSET/FETCH

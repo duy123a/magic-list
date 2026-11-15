@@ -1,0 +1,75 @@
+class bird
+{
+    public virtual void greeting()
+    {
+        Console.WriteLine("hi bird");
+    }
+}
+class peguin : bird
+{
+    // Dùng new để che giấu phương thức của lớp Cha
+    public new void greeting()
+    {
+        Console.WriteLine("hi peguin");
+    }
+}
+Cha chaCon = new Con(); thì điều gì xảy ra có bị ghi đè ko....
+
+
+==================================================
+PHÂN BIỆT NEW (METHOD HIDING) VS OVERRIDE (METHOD OVERRIDING)
+==================================================
+
+1. VỚI TỪ KHÓA NEW (CHE GIẤU HÀM - HIDING):
+- Code: public new void greeting()
+- Khai báo: bird chaCon = new peguin();
+- Kết quả: In ra "hi bird" (GỌI HÀM CỦA CLASS CHA).
+- Nguyên lý: new cắt đứt mối quan hệ đa hình. C# sẽ căn cứ vào KIỂU CỦA BIẾN 
+  (ở đây biến là kiểu 'bird') để gọi hàm.
+
+--------------------------------------------------
+
+2. VỚI TỪ KHÓA OVERRIDE (GHI ĐÈ HÀM - OVERRIDING):
+- Code: public override void greeting()
+- Khai báo: bird chaCon = new peguin();
+- Kết quả: In ra "hi peguin" (GỌI HÀM CỦA CLASS CON).
+- Nguyên lý: override giữ tính đa hình. C# sẽ căn cứ vào KIỂU ĐỐI TƯỢNG THỰC TẾ 
+  TRONG BỘ NHỚ (ở đây là 'peguin') để gọi hàm.
+==================================================
+
+
+class bird
+{
+    public abstract void greeting()
+}
+class peguin : bird
+{
+    // Dùng new để che giấu phương thức của lớp Cha
+    public new void greeting()
+    {
+        Console.WriteLine("hi peguin");
+    }
+}
+điều gì xảy ra với đoạn code trên
+
+==================================================
+ABSTRACT METHOD VÀ TỪ KHÓA NEW / OVERRIDE TRONG C#
+==================================================
+
+1. KHI DÙNG 'ABSTRACT' VỚI 'NEW' (BỊ LỖI COMPILE):
+- Class chứa hàm abstract BẮT BUỘC phải là 'abstract class'.
+- Class con KẾ THỪA abstract class BẮT BUỘC PHẢI 'override' hàm abstract đó.
+- Nếu dùng 'new' ở class con -> Lỗi CS0534 (Do không chịu implement hàm abstract).
+(Virtual thì không cần bắt buộc là 'abstract class', class con không nhất thiết phải implement vì virtual đóng vai trò như default method)
+
+--------------------------------------------------
+
+2. SỬA THÀNH 'OVERRIDE' (CHẠY ĐÚNG):
+- Code: 
+  abstract class bird { public abstract void greeting(); }
+  class peguin : bird { public override void greeting() { Console.WriteLine("hi peguin"); } }
+
+- Khai báo: bird chaCon = new peguin();
+- Gọi hàm: chaCon.greeting();
+- Kết quả: In ra "hi peguin" (Chạy hàm của Class Con nhờ tính Đa hình).
+==================================================
