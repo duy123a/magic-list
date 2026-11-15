@@ -100,3 +100,9 @@ git rm --cached <fileName>
 
 Kéo những commit remote hiện tại về r mới chồng cái commit local lên (useful khi commit trực tiếp vào dev?, thường là do local chưa pull bản mới nhất từ remote)
 git pull --rebase
+
+Hủy merge khi đang merge
+git merge --abort
+
+Push chồng lên commit cũ ở remote (thường dùng sau khi dùng git reset --mixed HEAD~1)
+git push --force-with-lease

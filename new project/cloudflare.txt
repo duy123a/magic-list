@@ -1,3 +1,0 @@
-cloudflared access tcp --hostname bsn-postgres.unlimited.io.vn --url localhost:15432
-
-cloudflared access tcp --hostname bsn-redis.unlimited.io.vn --url localhost:16379
